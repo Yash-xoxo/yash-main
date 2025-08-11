@@ -7,7 +7,7 @@ This is my personal portfolio website built with Next.js, TypeScript, and Tailwi
 First, run the development server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

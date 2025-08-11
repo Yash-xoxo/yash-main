@@ -1,51 +1,44 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import { Github, Linkedin, Mail, Phone, Download, ExternalLink, Calendar, Award, Code, Server, Monitor, Database, ChevronDown, Menu, X, Sun, Moon } from 'lucide-react'
+import { Github, Linkedin, Mail, Phone, Download, ExternalLink, ChevronDown, Menu, X, Sun, Moon, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { type CSSProperties } from 'react'
 
 // Star component for twinkling effect
-const Star = ({ style }: { style: React.CSSProperties }) => (
-  <div 
-    className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
-    style={style}
-  />
+const Star = ({ style }: { style: CSSProperties }) => (
+  <div className="absolute w-1 h-1 bg-white rounded-full animate-twinkle" style={style} />
 )
 
 // Shooting star component
-const ShootingStar = ({ delay }: { delay: number }) => (
-  <motion.div
-    className="absolute w-1 h-1 bg-gradient-to-r from-transparent via-white to-transparent rounded-full"
-    initial={{ 
-      x: -100, 
-      y: -100, 
-      opacity: 0,
-      scale: 0
-    }}
-    animate={{ 
-      x: window.innerWidth + 100, 
-      y: window.innerHeight + 100, 
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1, 1, 0]
-    }}
-    transition={{
-      duration: 2,
-      delay: delay,
-      repeat: Infinity,
-      repeatDelay: Math.random() * 10 + 5,
-      ease: "easeOut"
-    }}
-    style={{
-      boxShadow: '0 0 6px 2px rgba(255, 255, 255, 0.8)',
-      filter: 'blur(0.5px)'
-    }}
-  />
-)
+const ShootingStar = ({ delay }: { delay: number }) => {
+  const width = typeof window !== 'undefined' ? window.innerWidth : 1200
+  const height = typeof window !== 'undefined' ? window.innerHeight : 800
+  return (
+    <motion.div
+      className="absolute w-1 h-1 bg-gradient-to-r from-transparent via-white to-transparent rounded-full"
+      initial={{ x: -100, y: -100, opacity: 0, scale: 0 }}
+      animate={{ x: width + 100, y: height + 100, opacity: [0, 1, 1, 0], scale: [0, 1, 1, 0] }}
+      transition={{
+        duration: 2,
+        delay,
+        repeat: Infinity,
+        repeatDelay: Math.random() * 10 + 5,
+        ease: 'easeOut',
+      }}
+      style={{
+        boxShadow: '0 0 6px 2px rgba(255, 255, 255, 0.8)',
+        filter: 'blur(0.5px)',
+      }}
+    />
+  )
+}
 
 // Stars background component
 const StarsBackground = () => {
@@ -53,7 +46,6 @@ const StarsBackground = () => {
   const [shootingStars, setShootingStars] = useState<Array<{ id: number; delay: number }>>([])
 
   useEffect(() => {
-    // Generate random stars
     const generateStars = () => {
       const newStars = []
       for (let i = 0; i < 150; i++) {
@@ -61,20 +53,16 @@ const StarsBackground = () => {
           id: i,
           left: `${Math.random() * 100}%`,
           top: `${Math.random() * 100}%`,
-          animationDelay: `${Math.random() * 3}s`
+          animationDelay: `${Math.random() * 3}s`,
         })
       }
       setStars(newStars)
     }
 
-    // Generate shooting stars
     const generateShootingStars = () => {
       const newShootingStars = []
       for (let i = 0; i < 5; i++) {
-        newShootingStars.push({
-          id: i,
-          delay: Math.random() * 8
-        })
+        newShootingStars.push({ id: i, delay: Math.random() * 8 })
       }
       setShootingStars(newShootingStars)
     }
@@ -85,24 +73,11 @@ const StarsBackground = () => {
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Twinkling stars */}
       {stars.map((star) => (
-        <Star
-          key={star.id}
-          style={{
-            left: star.left,
-            top: star.top,
-            animationDelay: star.animationDelay
-          }}
-        />
+        <Star key={star.id} style={{ left: star.left, top: star.top, animationDelay: star.animationDelay }} />
       ))}
-      
-      {/* Shooting stars */}
-      {shootingStars.map((shootingStar) => (
-        <ShootingStar
-          key={shootingStar.id}
-          delay={shootingStar.delay}
-        />
+      {shootingStars.map((s) => (
+        <ShootingStar key={s.id} delay={s.delay} />
       ))}
     </div>
   )
@@ -131,111 +106,154 @@ export default function Portfolio() {
     { name: 'Systemd', category: 'DevOps', icon: '⚡' },
     { name: 'Server Monitoring', category: 'Monitoring', icon: '📊' },
     { name: 'Log Reader', category: 'Monitoring', icon: '📋' },
-    { name: 'Troubleshooting', category: 'Monitoring', icon: '🔍' }
+    { name: 'Troubleshooting', category: 'Monitoring', icon: '🔍' },
+    { name: 'Prometheus', category: 'Monitoring', icon: '📈' },
+    { name: 'Grafana', category: 'Monitoring', icon: '📊' },
+    { name: 'Generative AI', category: 'AI', icon: '🤖' },
+    { name: 'Prompt Expert', category: 'AI', icon: '💬' },
   ]
 
   const projects = [
     {
+      title: 'Deployed Containerized Microservices on AWS ECS',
+      description:
+        'Successfully deployed and managed containerized microservices architecture on AWS ECS with auto-scaling and load balancing',
+      tags: ['AWS ECS', 'Docker', 'Microservices', 'Auto-scaling'],
+      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download.png?raw=true',
+    },
+    {
+      title: 'Kubernetes Cluster Management',
+      description: 'Managed and orchestrated Kubernetes clusters for production workloads with high availability and fault tolerance',
+      tags: ['Kubernetes', 'Cluster Management', 'Production', 'Orchestration'],
+      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(1).png?raw=true',
+    },
+    {
+      title: 'Infrastructure as Code using Terraform',
+      description: 'Implemented Infrastructure as Code practices using Terraform for automated cloud resource provisioning',
+      tags: ['Terraform', 'IaC', 'Cloud Provisioning', 'Automation'],
+      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/terra.png?raw=true',
+    },
+    {
+      title: 'Implemented Monitoring and Alerting Systems using Prometheus and Grafana',
+      description: 'Built comprehensive monitoring and alerting infrastructure using Prometheus for metrics collection and Grafana for visualization',
+      tags: ['Prometheus', 'Grafana', 'Monitoring', 'Alerting'],
+      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(2).png?raw=true',
+    },
+    {
       title: 'CI/CD Pipeline with Jenkins',
-      description: 'Automated deployment pipeline with Jenkins, Docker, and Kubernetes integration for seamless software delivery',
+      description:
+        'Automated deployment pipeline with Jenkins, Docker, and Kubernetes integration for seamless software delivery',
       tags: ['Jenkins', 'Docker', 'CI/CD', 'Kubernetes'],
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: '/placeholder.svg?height=200&width=300&text=CI/CD+Pipeline+Dashboard'
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(3).png?raw=true',
     },
     {
       title: 'Menu-Based Python Automation',
       description: 'Interactive CLI tool for system automation and task management with intuitive menu-driven interface',
       tags: ['Python', 'Automation', 'CLI', 'System Admin'],
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: '/placeholder.svg?height=200&width=300&text=Python+CLI+Menu+Interface'
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(4).png?raw=true',
     },
     {
       title: 'Data Analytics Dashboard',
       description: 'Real-time data visualization dashboard with monitoring capabilities and interactive charts',
       tags: ['Analytics', 'Dashboard', 'Monitoring', 'Visualization'],
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: '/placeholder.svg?height=200&width=300&text=Analytics+Dashboard+Charts'
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(6).png?raw=true',
     },
     {
       title: 'Stepper Motor Control with PS3 Joystick',
       description: 'Hardware control system using Python and PS3 controller integration for precise motor movements',
       tags: ['Python', 'Hardware', 'Control', 'IoT'],
       link: 'https://github.com/Yash-xoxo',
-      image: '/placeholder.svg?height=200&width=300&text=Hardware+Control+System'
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/Google_AI_Studio_2025-08-08T07_00_36.070Z.png?raw=true',
     },
     {
       title: 'Custom Compiler in Python',
       description: 'Built a custom programming language compiler from scratch with lexical analysis and code generation',
       tags: ['Python', 'Compiler', 'Language', 'Parser'],
       link: 'https://github.com/Yash-xoxo',
-      image: '/placeholder.svg?height=200&width=300&text=Compiler+Architecture+Diagram'
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(5).png?raw=true',
     },
     {
       title: 'Messaging Automation Tool',
-      description: 'Multi-platform messaging CLI tool for WhatsApp, Twitter, Gmail, and SMS with scheduling features',
+      description:
+        'Multi-platform messaging CLI tool for WhatsApp, Twitter, Gmail, and SMS with scheduling features',
       tags: ['Python', 'Automation', 'Messaging', 'API'],
       link: 'https://github.com/Yash-xoxo',
-      image: '/placeholder.svg?height=200&width=300&text=Multi-Platform+Messaging+Tool'
-    }
+      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(7).png?raw=true',
+    },
   ]
 
   const certifications = [
     {
+      title: 'DevOps and Cloud',
+      platform: 'LinuxWorld',
+      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
+      icon: '☁️',
+    },
+    {
       title: 'RedHat RHCSA – System Administration',
       platform: 'LinkedIn',
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🎓'
+      icon: '🎓',
     },
     {
       title: 'Azure Cognitive Services',
       platform: 'Microsoft / Coursera',
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '☁️'
+      icon: '☁️',
     },
     {
       title: 'AWS Technical Essentials',
       platform: 'AWS via LinkedIn',
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🏆'
+      icon: '🏆',
     },
     {
       title: 'Hands-on Challenges in DevOps Tools',
       platform: 'LinkedIn',
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🔧'
+      icon: '🔧',
     },
     {
       title: 'Ultimate Linux Troubleshooting Training (2025)',
       platform: 'Udemy',
       link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🐧'
-    }
+      icon: '🐧',
+    },
   ]
 
   const timeline = [
     {
       year: '2020',
       title: 'Class 12 - PCM',
-      description: 'Completed Higher Secondary Education with Physics, Chemistry, and Mathematics',
+      description:
+        'Completed Higher Secondary Education with Physics, Chemistry, and Mathematics',
       icon: '📚',
       type: 'education',
       details: {
         subjects: ['Physics', 'Chemistry', 'Mathematics'],
         board: 'CBSE',
-        focus: 'Science and Mathematics foundation'
-      }
+        focus: 'Science and Mathematics foundation',
+      },
     },
     {
       year: '2022–2026',
       title: 'B.Tech in Computer Science',
-      description: 'Pursuing Bachelor of Technology in Computer Science Engineering',
+      description:
+        'Pursuing Bachelor of Technology in Computer Science Engineering',
       icon: '🎓',
       type: 'education',
       details: {
         specialization: 'Computer Science Engineering',
         focus: 'DevOps, Cloud Computing, Software Development',
-        currentYear: '3rd Year'
-      }
+        currentYear: '3rd Year',
+      },
     },
     {
       year: 'May 2025',
@@ -246,8 +264,8 @@ export default function Portfolio() {
       details: {
         event: 'College Tech Fest',
         achievement: 'Best Innovation Award',
-        technology: 'Hardware Control Systems'
-      }
+        technology: 'Hardware Control Systems',
+      },
     },
     {
       year: '2024',
@@ -258,93 +276,103 @@ export default function Portfolio() {
       details: {
         duration: '6 months',
         technologies: ['Docker', 'Kubernetes', 'Jenkins', 'AWS'],
-        achievements: 'Automated deployment processes'
-      }
-    }
+        achievements: 'Automated deployment processes',
+      },
+    },
   ]
 
   const aspirations = [
     {
       title: 'Launch a Cloud-native DevOps Product',
       description: 'Build and launch a comprehensive DevOps platform',
-      icon: '🚀'
+      icon: '🚀',
     },
     {
       title: 'Teach DevOps via LinkedIn/YouTube',
       description: 'Share knowledge and mentor the next generation',
-      icon: '📚'
+      icon: '📚',
     },
     {
       title: 'Contribute to Arch Linux/Open Source',
       description: 'Give back to the open source community',
-      icon: '🐧'
+      icon: '🐧',
     },
     {
       title: 'Expand into GitOps & AI-based Infrastructure',
       description: 'Explore cutting-edge infrastructure technologies',
-      icon: '🤖'
-    }
+      icon: '🤖',
+    },
   ]
 
-  const filteredSkills = activeFilter === 'All' 
-    ? skills 
-    : skills.filter(skill => skill.category === activeFilter)
+  const filteredSkills = activeFilter === 'All' ? skills : skills.filter((s) => s.category === activeFilter)
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'nearest'
-      })
+      element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
     }
     setIsMenuOpen(false)
   }
 
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.15,
-      rootMargin: '0px 0px -100px 0px'
-    }
-
+    const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -100px 0px' }
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in')
-        }
+        if (entry.isIntersecting) entry.target.classList.add('animate-in')
       })
     }, observerOptions)
-
     const elements = document.querySelectorAll('.scroll-animate')
     elements.forEach((el) => observer.observe(el))
-
     return () => observer.disconnect()
   }, [])
 
-  // Smooth filter transition
-  const handleFilterChange = (filter: string) => {
-    setActiveFilter(filter)
+  const handleFilterChange = (filter: string) => setActiveFilter(filter)
+
+  // Contact form state
+  const [formState, setFormState] = useState({ status: 'idle' as const, message: '' })
+  const [isPending, setIsPending] = useState(false)
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsPending(true)
+    try {
+      // If running as static export (GitHub Pages), fall back to mailto
+      const isStatic = typeof window !== 'undefined' && window.location.protocol === 'file:'
+      if (isStatic || typeof fetch === 'undefined') {
+        const name = (formData.get('name') || '').toString()
+        const email = (formData.get('email') || '').toString()
+        const message = (formData.get('message') || '').toString()
+        const mailto = `mailto:yashg5577@gmail.com?subject=Portfolio%20Contact%20from%20${encodeURIComponent(name)}&body=${encodeURIComponent(
+          `From: ${name} <${email}>\n\n${message}`,
+        )}`
+        window.location.href = mailto
+        setFormState({ status: 'success', message: 'Opening your email client…' })
+      } else {
+        const response = await fetch('/api/send-message', {
+          method: 'POST',
+          body: formData,
+        })
+        const result = await response.json()
+        setFormState(result)
+      }
+    } catch (error) {
+      setFormState({ status: 'error', message: 'Failed to send message. Please try again.' })
+    } finally {
+      setIsPending(false)
+    }
   }
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
       <div className="bg-[#222831] text-[#EEEEEE] min-h-screen relative">
-        {/* Stars Background */}
         <StarsBackground />
-        
+
         {/* Navigation */}
         <nav className="fixed top-0 w-full bg-[#222831]/95 backdrop-blur-md z-50 border-b border-[#393E46]/50 transition-all duration-300">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-xl font-bold text-[#00ADB5]"
-            >
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }} className="text-xl font-bold text-[#00ADB5]">
               Yash Gupta
             </motion.div>
-            
+
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
               {['About', 'Timeline', 'Skills', 'Projects', 'Certifications', 'Contact'].map((item, index) => (
@@ -352,7 +380,7 @@ export default function Portfolio() {
                   key={item}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+                  transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }}
                   onClick={() => scrollToSection(item.toLowerCase())}
                   className="hover:text-[#00ADB5] transition-all duration-300 relative group"
                 >
@@ -364,30 +392,14 @@ export default function Portfolio() {
 
             {/* Theme Toggle & Mobile Menu */}
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="text-[#EEEEEE] hover:text-[#00ADB5] transition-all duration-300"
-              >
-                <motion.div
-                  animate={{ rotate: isDarkMode ? 0 : 180 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                >
+              <Button variant="ghost" size="sm" onClick={() => setIsDarkMode(!isDarkMode)} className="text-[#EEEEEE] hover:text-[#00ADB5] transition-all duration-300">
+                <motion.div animate={{ rotate: isDarkMode ? 0 : 180 }} transition={{ duration: 0.5, ease: 'easeInOut' }}>
                   {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </motion.div>
               </Button>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden text-[#EEEEEE] transition-all duration-300"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <motion.div
-                  animate={{ rotate: isMenuOpen ? 90 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
+
+              <Button variant="ghost" size="sm" className="md:hidden text-[#EEEEEE] transition-all duration-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <motion.div animate={{ rotate: isMenuOpen ? 90 : 0 }} transition={{ duration: 0.3 }}>
                   {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                 </motion.div>
               </Button>
@@ -395,13 +407,10 @@ export default function Portfolio() {
           </div>
 
           {/* Mobile Navigation */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ 
-              opacity: isMenuOpen ? 1 : 0, 
-              height: isMenuOpen ? 'auto' : 0 
-            }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            animate={{ opacity: isMenuOpen ? 1 : 0, height: isMenuOpen ? 'auto' : 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="md:hidden bg-[#393E46]/95 backdrop-blur-md border-t border-[#00ADB5]/30 overflow-hidden"
           >
             <div className="container mx-auto px-4 py-4 space-y-4">
@@ -424,69 +433,39 @@ export default function Portfolio() {
         {/* Hero Section */}
         <section id="about" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
           <motion.div style={{ y }} className="absolute inset-0 opacity-10">
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3]
-              }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute top-20 left-10 w-32 h-32 bg-[#00ADB5] rounded-full blur-3xl"
             />
-            <motion.div 
-              animate={{ 
-                scale: [1.2, 1, 1.2],
-                opacity: [0.6, 0.3, 0.6]
-              }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            <motion.div
+              animate={{ scale: [1.2, 1, 1.2], opacity: [0.6, 0.3, 0.6] }}
+              transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute bottom-20 right-10 w-48 h-48 bg-[#00ADB5] rounded-full blur-3xl"
             />
           </motion.div>
-          
+
           <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            >
-              <motion.h1 
-                className="text-5xl md:text-7xl font-bold mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
+            <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1, ease: 'easeOut' }}>
+              <motion.h1 className="text-5xl md:text-7xl font-bold mb-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
                 Hi, I'm <span className="text-[#00ADB5] gradient-text">Yash</span>
               </motion.h1>
-              <motion.h2 
-                className="text-2xl md:text-3xl text-[#EEEEEE]/80 mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
+              <motion.h2 className="text-2xl md:text-3xl text-[#EEEEEE]/80 mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}>
                 DevOps Engineer · B.Tech CSE Student
               </motion.h2>
-              <motion.p 
-                className="text-lg text-[#EEEEEE]/70 mb-8 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-              >
-                Passionate about automating everything, building robust CI/CD pipelines, 
-                and crafting scalable infrastructure solutions. Currently running on Arch Linux 
-                and loving every bit of it.
+              <motion.p className="text-lg text-[#EEEEEE]/70 mb-8 leading-relaxed" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
+                Passionate about automating everything, building robust CI/CD pipelines, and crafting scalable infrastructure solutions. Currently running on Arch Linux and loving every bit of it.
               </motion.p>
-              
-              <motion.div 
-                className="flex flex-wrap gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-              >
-                <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#00ADB5]/25">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Resume
+
+              <motion.div className="flex flex-wrap gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }}>
+                <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#00ADB5]/25">
+                  <Link href="/resume">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Resume
+                  </Link>
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5] hover:text-white transition-all duration-300 hover:scale-105"
                   onClick={() => scrollToSection('contact')}
                 >
@@ -494,69 +473,33 @@ export default function Portfolio() {
                 </Button>
               </motion.div>
 
-              <motion.div 
-                className="flex space-x-6 mt-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1 }}
-              >
+              <motion.div className="flex space-x-6 mt-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 1 }}>
                 {[
-                  { href: "https://github.com/Yash-xoxo", icon: Github },
-                  { href: "https://linkedin.com/in/yash-gupta-4285b8312", icon: Linkedin },
-                  { href: "mailto:yashg5577@gmail.com", icon: Mail }
-                ].map(({ href, icon: Icon }, index) => (
-                  <motion.a 
-                    key={href}
-                    href={href} 
-                    className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition-all duration-300 hover:scale-110"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  { href: 'https://github.com/Yash-xoxo', icon: Github },
+                  { href: 'https://linkedin.com/in/yash-gupta-4285b8312', icon: Linkedin },
+                  { href: 'mailto:yashg5577@gmail.com', icon: Mail },
+                ].map(({ href, icon: Icon }) => (
+                  <motion.a key={href} href={href} className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition-all duration-300 hover:scale-110" whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
                     <Icon className="h-6 w-6" />
                   </motion.a>
                 ))}
               </motion.div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-              className="relative"
-            >
+            <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }} className="relative">
               <div className="relative">
-                <motion.img 
-                  src="/placeholder.svg?height=400&width=400&text=Yash+Gupta+Profile" 
+                <motion.img
+                  src="https://github.com/Yash-xoxo/yash-search/blob/main/assets/img/passport-new.jpg?raw=true"
                   alt="Yash Gupta"
-                  className="w-80 h-80 rounded-full mx-auto border-4 border-[#00ADB5] shadow-2xl"
+                  className="w-80 h-80 rounded-full mx-auto border-4 border-[#00ADB5] shadow-2xl object-cover"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
                 />
-                
-                {/* Floating Code Card */}
-                <motion.div
-                  animate={{ y: [-10, 10, -10] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -right-4 top-16 bg-[#393E46]/90 backdrop-blur-sm p-4 rounded-lg border border-[#00ADB5]/30 shadow-xl"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <pre className="text-sm font-mono text-[#00ADB5]">
-{`const yash = {
-  tools: ["Docker", "Kubernetes", "Jenkins"],
-  os: "Arch Linux",
-  motto: "automate everything"
-}`}
-                  </pre>
-                </motion.div>
               </div>
             </motion.div>
           </div>
 
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
-          >
+          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
             <ChevronDown className="h-8 w-8 text-[#00ADB5] opacity-70" />
           </motion.div>
         </section>
@@ -564,12 +507,7 @@ export default function Portfolio() {
         {/* Timeline Section */}
         <section id="timeline" className="py-20 scroll-animate relative z-10">
           <div className="container mx-auto px-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl font-bold text-center mb-16"
-            >
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
               My <span className="text-[#00ADB5]">Journey</span>
             </motion.h2>
 
@@ -579,7 +517,7 @@ export default function Portfolio() {
                   key={index}
                   initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
+                  transition={{ duration: 0.8, delay: index * 0.2, ease: 'easeOut' }}
                   className={`flex items-center mb-12 ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
                 >
                   <div className={`flex-1 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}`}>
@@ -590,17 +528,13 @@ export default function Portfolio() {
                           <div className="flex items-start gap-3 mb-2 h-full">
                             <span className="text-2xl flex-shrink-0">{item.icon}</span>
                             <div className="flex-1 min-w-0">
-                              <h3 className="text-[#EEEEEE] font-bold text-base leading-tight mb-1 break-words">
-                                {item.title}
-                              </h3>
+                              <h3 className="text-[#EEEEEE] font-bold text-base leading-tight mb-1 break-words">{item.title}</h3>
                               <p className="text-[#00ADB5] text-sm mb-2">{item.year}</p>
-                              <p className="text-[#EEEEEE]/80 text-sm leading-relaxed line-clamp-3">
-                                {item.description}
-                              </p>
+                              <p className="text-[#EEEEEE]/80 text-sm leading-relaxed line-clamp-3">{item.description}</p>
                             </div>
                           </div>
                         </div>
-                        
+
                         {/* Back */}
                         <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-4 text-white overflow-hidden">
                           <h3 className="font-bold text-lg mb-3 break-words">{item.title}</h3>
@@ -645,13 +579,8 @@ export default function Portfolio() {
                       </div>
                     </div>
                   </div>
-                  
-                  <motion.div 
-                    className="w-4 h-4 bg-[#00ADB5] rounded-full border-4 border-[#222831] z-10"
-                    whileInView={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                  />
-                  
+
+                  <motion.div className="w-4 h-4 bg-[#00ADB5] rounded-full border-4 border-[#222831] z-10" whileInView={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.6, delay: index * 0.2 }} />
                   <div className="flex-1"></div>
                 </motion.div>
               ))}
@@ -662,34 +591,21 @@ export default function Portfolio() {
         {/* Skills Section */}
         <section id="skills" className="py-20 bg-[#393E46]/20 scroll-animate relative z-10">
           <div className="container mx-auto px-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl font-bold text-center mb-16"
-            >
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
               Technical <span className="text-[#00ADB5]">Skills</span>
             </motion.h2>
 
-            {/* Filter Buttons */}
-            <motion.div 
-              className="flex flex-wrap justify-center gap-4 mb-12"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              {['All', 'DevOps', 'Monitoring', 'Code', 'Infra'].map((filter, index) => (
-                <motion.div
-                  key={filter}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+            {/* Filters */}
+            <motion.div className="flex flex-wrap justify-center gap-4 mb-12" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
+              {['All', 'DevOps', 'Monitoring', 'Code', 'Infra', 'AI'].map((filter, index) => (
+                <motion.div key={filter} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
-                    variant={activeFilter === filter ? "default" : "outline"}
+                    variant={activeFilter === filter ? 'default' : 'outline'}
                     onClick={() => handleFilterChange(filter)}
-                    className={`transition-all duration-300 ${activeFilter === filter 
-                      ? "bg-[#00ADB5] text-white shadow-lg shadow-[#00ADB5]/25" 
-                      : "border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5] hover:text-white"
+                    className={`transition-all duration-300 ${
+                      activeFilter === filter
+                        ? 'bg-[#00ADB5] text-white shadow-lg shadow-[#00ADB5]/25'
+                        : 'border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5] hover:text-white'
                     }`}
                   >
                     {filter}
@@ -698,11 +614,8 @@ export default function Portfolio() {
               ))}
             </motion.div>
 
-            {/* Skills Grid with Flip Cards */}
-            <motion.div 
-              layout
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-6xl mx-auto"
-            >
+            {/* Skills Grid */}
+            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
               {filteredSkills.map((skill, index) => (
                 <motion.div
                   key={skill.name}
@@ -710,15 +623,10 @@ export default function Portfolio() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: index * 0.05,
-                    ease: "easeOut"
-                  }}
+                  transition={{ duration: 0.5, delay: index * 0.05, ease: 'easeOut' }}
                   className="flip-card h-32"
                 >
                   <div className="flip-card-inner">
-                    {/* Front */}
                     <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg p-4 text-center">
                       <div className="text-2xl mb-2">{skill.icon}</div>
                       <div className="text-[#EEEEEE] font-medium text-sm">{skill.name}</div>
@@ -726,8 +634,6 @@ export default function Portfolio() {
                         {skill.category}
                       </Badge>
                     </div>
-                    
-                    {/* Back */}
                     <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-4 text-center text-white">
                       <div className="text-lg font-bold mb-2">{skill.name}</div>
                       <div className="text-xs leading-relaxed">
@@ -735,10 +641,9 @@ export default function Portfolio() {
                         {skill.category === 'Monitoring' && 'System health tracking, log analysis, performance metrics'}
                         {skill.category === 'Code' && 'Development tools, version control, scripting'}
                         {skill.category === 'Infra' && 'Infrastructure as Code, cloud provisioning, configuration'}
+                        {skill.category === 'AI' && 'AI/ML integration, prompt engineering, automation'}
                       </div>
-                      <div className="mt-2 text-xs opacity-80">
-                        Experience Level: {Math.floor(Math.random() * 3) + 2} years
-                      </div>
+                      <div className="mt-2 text-xs opacity-80">Experience Level: {Math.floor(Math.random() * 3) + 2} years</div>
                     </div>
                   </div>
                 </motion.div>
@@ -750,30 +655,18 @@ export default function Portfolio() {
         {/* Projects Section */}
         <section id="projects" className="py-20 scroll-animate relative z-10">
           <div className="container mx-auto px-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl font-bold text-center mb-16"
-            >
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
               Featured <span className="text-[#00ADB5]">Projects</span>
             </motion.h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {projects.map((project, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
-                  className="flip-card h-80"
-                >
+                <motion.div key={index} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' }} className="flip-card h-80">
                   <div className="flip-card-inner">
-                    {/* Front */}
                     <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg overflow-hidden">
                       <div className="relative h-48">
-                        <img 
-                          src={project.image || "/placeholder.svg"} 
+                        <img
+                          src={project.image || '/placeholder.svg'}
                           alt={project.title}
                           className="w-full h-full object-cover transition-transform duration-500"
                           loading="lazy"
@@ -792,12 +685,11 @@ export default function Portfolio() {
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Back */}
+
                     <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-6 text-white">
                       <h3 className="font-bold text-xl mb-4">{project.title}</h3>
                       <p className="text-sm leading-relaxed mb-4">{project.description}</p>
-                      
+
                       <div className="mb-4">
                         <h4 className="font-semibold mb-2">Technologies:</h4>
                         <div className="flex flex-wrap gap-1">
@@ -808,7 +700,7 @@ export default function Portfolio() {
                           ))}
                         </div>
                       </div>
-                      
+
                       <div className="mb-4">
                         <h4 className="font-semibold mb-1">Key Features:</h4>
                         <ul className="text-xs space-y-1">
@@ -817,12 +709,8 @@ export default function Portfolio() {
                           <li>• Real-time monitoring</li>
                         </ul>
                       </div>
-                      
-                      <Button 
-                        variant="outline" 
-                        className="w-full border-white text-white hover:bg-white hover:text-[#00ADB5] mt-auto transition-all duration-300"
-                        onClick={() => window.open(project.link, '_blank')}
-                      >
+
+                      <Button variant="outline" className="w-full border-white text-white hover:bg-white hover:text-[#00ADB5] mt-auto transition-all duration-300" onClick={() => window.open(project.link, '_blank')}>
                         View Project <ExternalLink className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
@@ -836,54 +724,36 @@ export default function Portfolio() {
         {/* Certifications Section */}
         <section id="certifications" className="py-20 bg-[#393E46]/20 scroll-animate relative z-10">
           <div className="container mx-auto px-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl font-bold text-center mb-16"
-            >
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
               <span className="text-[#00ADB5]">Certifications</span> & Achievements
             </motion.h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {certifications.map((cert, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-                  className="flip-card h-48"
-                >
+                <motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }} className="flip-card h-48">
                   <div className="flip-card-inner">
-                    {/* Front */}
                     <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg p-6 text-center">
                       <div className="text-4xl mb-4">{cert.icon}</div>
-                      <h3 className="text-[#EEEEEE] text-lg font-bold leading-tight mb-2">
-                        {cert.title}
-                      </h3>
+                      <h3 className="text-[#EEEEEE] text-lg font-bold leading-tight mb-2">{cert.title}</h3>
                       <p className="text-[#00ADB5] text-sm">{cert.platform}</p>
                     </div>
-                    
-                    {/* Back */}
+
                     <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-6 text-white">
                       <h3 className="font-bold text-lg mb-3">{cert.title}</h3>
                       <div className="text-sm space-y-2 mb-4">
                         <p><strong>Platform:</strong> {cert.platform}</p>
                         <p><strong>Status:</strong> Certified</p>
-                        <p><strong>Skills:</strong> 
+                        <p>
+                          <strong>Skills:</strong>
+                          {cert.title.includes('DevOps and Cloud') && ' DevOps, Cloud Computing, Infrastructure'}
                           {cert.title.includes('RHCSA') && ' System Administration, Linux'}
                           {cert.title.includes('Azure') && ' Cloud Services, AI/ML'}
                           {cert.title.includes('AWS') && ' Cloud Computing, Infrastructure'}
-                          {cert.title.includes('DevOps') && ' CI/CD, Automation'}
+                          {cert.title.includes('DevOps Tools') && ' CI/CD, Automation'}
                           {cert.title.includes('Linux') && ' Troubleshooting, System Management'}
                         </p>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="w-full border-white text-white hover:bg-white hover:text-[#00ADB5] transition-all duration-300"
-                        onClick={() => window.open(cert.link, '_blank')}
-                      >
+                      <Button variant="outline" size="sm" className="w-full border-white text-white hover:bg-white hover:text-[#00ADB5] transition-all duration-300" onClick={() => window.open(cert.link, '_blank')}>
                         View Certificate <ExternalLink className="ml-2 h-3 w-3" />
                       </Button>
                     </div>
@@ -897,47 +767,61 @@ export default function Portfolio() {
         {/* Blog Section */}
         <section className="py-20 scroll-animate relative z-10">
           <div className="container mx-auto px-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl font-bold text-center mb-16"
-            >
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
               Latest <span className="text-[#00ADB5]">Blog Posts</span>
             </motion.h2>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[1, 2, 3].map((i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
-                  whileHover={{ y: -5 }}
-                >
-                  <Card className="bg-[#393E46]/90 backdrop-blur-sm border-[#00ADB5]/30 h-full transition-all duration-300 hover:border-[#00ADB5] hover:shadow-lg hover:shadow-[#00ADB5]/10">
-                    <CardHeader>
-                      <div className="w-full h-32 bg-[#00ADB5]/20 rounded-lg flex items-center justify-center mb-4">
-                        <span className="text-4xl">🚧</span>
-                      </div>
-                      <CardTitle className="text-[#EEEEEE]">
-                        Coming Soon
-                      </CardTitle>
-                      <CardDescription className="text-[#EEEEEE]/70">
-                        Exciting DevOps content is on the way!
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex gap-2">
-                        <Badge variant="secondary" className="bg-[#00ADB5]/20 text-[#00ADB5]">
-                          DevOps
-                        </Badge>
-                        <Badge variant="secondary" className="bg-[#00ADB5]/20 text-[#00ADB5]">
-                          Tutorial
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
+              {[
+                {
+                  title: 'Docker & Kubernetes: Use Cases in Industries',
+                  description: 'How containers and orchestration power modern production systems across sectors.',
+                  tags: ['Docker', 'Kubernetes', 'DevOps'],
+                  link: '/blog/docker-kubernetes-industries',
+                },
+                {
+                  title: 'Monitoring in the Wild: Prometheus & Grafana',
+                  description: 'Metrics, alerting, and dashboards that keep SREs sane and systems healthy.',
+                  tags: ['Prometheus', 'Grafana', 'Observability'],
+                  link: '/blog/monitoring-prometheus-grafana',
+                },
+                {
+                  title: 'Linux at Work: RHEL 9 and Other Distros',
+                  description: 'Enterprise Linux distributions and where each shines in production.',
+                  tags: ['Linux', 'RHEL 9', 'Distros'],
+                  link: '/blog/redhat-rhel9-linux-distros',
+                },
+              ].map((blog, i) => (
+                <motion.div key={blog.link} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }} whileHover={{ y: -5 }}>
+                  <Link href={blog.link}>
+                    <Card className="bg-[#393E46]/90 backdrop-blur-sm border-[#00ADB5]/30 h-full transition-all duration-300 hover:border-[#00ADB5] hover:shadow-lg hover:shadow-[#00ADB5]/10">
+                      <CardHeader>
+                        <div className="w-full h-32 bg-[#00ADB5]/20 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+                          <img 
+                            src={blog.link === '/blog/docker-kubernetes-industries' 
+                              ? 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(8).png?raw=true'
+                              : blog.link === '/blog/monitoring-prometheus-grafana'
+                              ? 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(9).png?raw=true'
+                              : 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(10).png?raw=true'
+                            }
+                            alt={blog.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <CardTitle className="text-[#EEEEEE] text-lg leading-tight">{blog.title}</CardTitle>
+                        <CardDescription className="text-[#EEEEEE]/70">{blog.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex gap-2">
+                          {blog.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="bg-[#00ADB5]/20 text-[#00ADB5]">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </motion.div>
               ))}
             </div>
@@ -947,26 +831,14 @@ export default function Portfolio() {
         {/* Aspirations Section */}
         <section className="py-20 bg-[#393E46]/20 scroll-animate relative z-10">
           <div className="container mx-auto px-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl font-bold text-center mb-16"
-            >
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
               Future <span className="text-[#00ADB5]">Aspirations</span>
             </motion.h2>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {aspirations.map((aspiration, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
-                  className="flip-card h-48"
-                >
+                <motion.div key={index} initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' }} className="flip-card h-48">
                   <div className="flip-card-inner">
-                    {/* Front */}
                     <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg p-6">
                       <div className="flex items-center gap-4">
                         <div className="text-3xl">{aspiration.icon}</div>
@@ -976,8 +848,7 @@ export default function Portfolio() {
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Back */}
+
                     <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-6 text-white">
                       <h3 className="font-bold text-xl mb-4">{aspiration.title}</h3>
                       <div className="text-sm space-y-2">
@@ -1025,38 +896,22 @@ export default function Portfolio() {
         {/* Contact Section */}
         <section id="contact" className="py-20 scroll-animate relative z-10">
           <div className="container mx-auto px-4">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl font-bold text-center mb-16"
-            >
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
               Get In <span className="text-[#00ADB5]">Touch</span>
             </motion.h2>
 
             <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
               {/* Contact Info */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
+              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
                 <h3 className="text-2xl font-bold mb-8 text-[#00ADB5]">Let's Connect</h3>
                 <div className="space-y-6">
                   {[
-                    { icon: Mail, label: "Email", value: "yashg5577@gmail.com", href: "mailto:yashg5577@gmail.com" },
-                    { icon: Phone, label: "Phone", value: "+91 78394 91779", href: "tel:+917839491779" },
-                    { icon: Github, label: "GitHub", value: "github.com/Yash-xoxo", href: "https://github.com/Yash-xoxo" },
-                    { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/yash-gupta-4285b8312", href: "https://linkedin.com/in/yash-gupta-4285b8312" }
+                    { icon: Mail, label: 'Email', value: 'yashg5577@gmail.com', href: 'mailto:yashg5577@gmail.com' },
+                    { icon: Phone, label: 'Phone', value: '+91 78394 91779', href: 'tel:+917839491779' },
+                    { icon: Github, label: 'GitHub', value: 'github.com/Yash-xoxo', href: 'https://github.com/Yash-xoxo' },
+                    { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/yash-gupta-4285b8312', href: 'https://linkedin.com/in/yash-gupta-4285b8312' },
                   ].map(({ icon: Icon, label, value, href }, index) => (
-                    <motion.div 
-                      key={label}
-                      className="flex items-center gap-4"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      whileHover={{ x: 5 }}
-                    >
+                    <motion.div key={label} className="flex items-center gap-4" initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: index * 0.1 }} whileHover={{ x: 5 }}>
                       <Icon className="h-6 w-6 text-[#00ADB5]" />
                       <div>
                         <p className="font-medium">{label}</p>
@@ -1070,11 +925,7 @@ export default function Portfolio() {
               </motion.div>
 
               {/* Contact Form */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
+              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
                 <Card className="bg-[#393E46]/90 backdrop-blur-sm border-[#00ADB5]/30 hover:border-[#00ADB5] transition-all duration-300">
                   <CardHeader>
                     <CardTitle className="text-[#EEEEEE]">Send a Message</CardTitle>
@@ -1083,31 +934,51 @@ export default function Portfolio() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <motion.div whileFocus={{ scale: 1.02 }}>
-                      <Input 
-                        placeholder="Your Name" 
+                    <form onSubmit={(e) => {
+                      e.preventDefault()
+                      const formData = new FormData(e.currentTarget)
+                      handleSubmit(formData)
+                    }} className="space-y-4">
+                      <Input
+                        name="name"
+                        placeholder="Your Name"
                         className="bg-[#222831]/80 backdrop-blur-sm border-[#00ADB5]/30 text-[#EEEEEE] placeholder:text-[#EEEEEE]/50 focus:border-[#00ADB5] transition-all duration-300"
+                        required
+                        disabled={isPending}
                       />
-                    </motion.div>
-                    <motion.div whileFocus={{ scale: 1.02 }}>
-                      <Input 
-                        type="email" 
-                        placeholder="Your Email" 
+                      <Input
+                        type="email"
+                        name="email"
+                        placeholder="Your Email"
                         className="bg-[#222831]/80 backdrop-blur-sm border-[#00ADB5]/30 text-[#EEEEEE] placeholder:text-[#EEEEEE]/50 focus:border-[#00ADB5] transition-all duration-300"
+                        required
+                        disabled={isPending}
                       />
-                    </motion.div>
-                    <motion.div whileFocus={{ scale: 1.02 }}>
-                      <Textarea 
-                        placeholder="Your Message" 
+                      <Textarea
+                        name="message"
+                        placeholder="Your Message"
                         rows={5}
                         className="bg-[#222831]/80 backdrop-blur-sm border-[#00ADB5]/30 text-[#EEEEEE] placeholder:text-[#EEEEEE]/50 focus:border-[#00ADB5] transition-all duration-300 resize-none"
+                        required
+                        disabled={isPending}
                       />
-                    </motion.div>
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button className="w-full bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#00ADB5]/25">
-                        Send Message
+                      <Button className="w-full bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#00ADB5]/25" disabled={isPending}>
+                        {isPending ? 'Sending...' : 'Send Message'}
                       </Button>
-                    </motion.div>
+                    </form>
+
+                    {formState.status === 'success' && (
+                      <div className="flex items-center gap-2 text-green-400 text-sm">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span>{formState.message}</span>
+                      </div>
+                    )}
+                    {formState.status === 'error' && (
+                      <div className="flex items-center gap-2 text-red-400 text-sm">
+                        <AlertCircle className="h-4 w-4" />
+                        <span>{formState.message}</span>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -1119,57 +990,26 @@ export default function Portfolio() {
         <footer className="py-12 border-t border-[#393E46]/50 relative z-10">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-center">
-              <motion.p 
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.6 }}
-                className="text-[#EEEEEE]/70 mb-4 md:mb-0"
-              >
+              <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6 }} className="text-[#EEEEEE]/70 mb-4 md:mb-0">
                 © 2025 Yash Gupta — Built with ❤️ on Arch Linux
               </motion.p>
-              
-              <motion.div 
-                className="flex space-x-6"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
+
+              <motion.div className="flex space-x-6" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
                 {[
-                  { href: "https://github.com/Yash-xoxo", icon: Github },
-                  { href: "https://linkedin.com/in/yash-gupta-4285b8312", icon: Linkedin },
-                  { href: "mailto:yashg5577@gmail.com", icon: Mail }
-                ].map(({ href, icon: Icon }, index) => (
-                  <motion.a 
-                    key={href}
-                    href={href} 
-                    className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition-all duration-300"
-                    whileHover={{ scale: 1.2, y: -2 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
+                  { href: 'https://github.com/Yash-xoxo', icon: Github },
+                  { href: 'https://linkedin.com/in/yash-gupta-4285b8312', icon: Linkedin },
+                  { href: 'mailto:yashg5577@gmail.com', icon: Mail },
+                ].map(({ href, icon: Icon }) => (
+                  <motion.a key={href} href={href} className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition-all duration-300" whileHover={{ scale: 1.2, y: -2 }} whileTap={{ scale: 0.9 }}>
                     <Icon className="h-5 w-5" />
                   </motion.a>
                 ))}
               </motion.div>
             </div>
-            
-            <motion.div 
-              className="flex justify-center space-x-8 mt-8 text-sm text-[#EEEEEE]/50"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <motion.button 
-                className="hover:text-[#00ADB5] transition-colors duration-300"
-                whileHover={{ scale: 1.05 }}
-              >
-                Privacy Policy
-              </motion.button>
-              <motion.button 
-                className="hover:text-[#00ADB5] transition-colors duration-300"
-                whileHover={{ scale: 1.05 }}
-              >
-                Terms of Use
-              </motion.button>
+
+            <motion.div className="flex justify-center space-x-8 mt-8 text-sm text-[#EEEEEE]/50" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}>
+              <Link href="/privacy" className="hover:text-[#00ADB5] transition-colors duration-300">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-[#00ADB5] transition-colors duration-300">Terms of Use</Link>
             </motion.div>
           </div>
         </footer>

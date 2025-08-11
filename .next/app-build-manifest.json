@@ -1,0 +1,74 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/app/_not-found/page-de8095b667e44cee.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/css/6122a545a9306958.css",
+      "static/chunks/app/layout-5721ef9a5c826db0.js"
+    ],
+    "/blog/monitoring-prometheus-grafana/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/858-14fa332ce5241c48.js",
+      "static/chunks/app/blog/monitoring-prometheus-grafana/page-50271ac633148d87.js"
+    ],
+    "/blog/redhat-rhel9-linux-distros/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/858-14fa332ce5241c48.js",
+      "static/chunks/app/blog/redhat-rhel9-linux-distros/page-8c65183ca1c44990.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/858-14fa332ce5241c48.js",
+      "static/chunks/843-3c1f426c6fbf67b4.js",
+      "static/chunks/app/page-bfda6e68538e3af8.js"
+    ],
+    "/privacy/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/app/privacy/page-e65e0a450c9ed482.js"
+    ],
+    "/terms/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/app/terms/page-ed990b9f4d180281.js"
+    ],
+    "/resume/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/858-14fa332ce5241c48.js",
+      "static/chunks/app/resume/page-3d098e366235fe68.js"
+    ],
+    "/blog/docker-kubernetes-industries/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/858-14fa332ce5241c48.js",
+      "static/chunks/app/blog/docker-kubernetes-industries/page-82c09410148ab5e6.js"
+    ]
+  }
+}

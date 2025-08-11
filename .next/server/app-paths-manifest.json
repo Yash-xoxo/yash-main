@@ -1,0 +1,11 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/blog/monitoring-prometheus-grafana/page": "app/blog/monitoring-prometheus-grafana/page.js",
+  "/api/send-message/route": "app/api/send-message/route.js",
+  "/blog/redhat-rhel9-linux-distros/page": "app/blog/redhat-rhel9-linux-distros/page.js",
+  "/page": "app/page.js",
+  "/privacy/page": "app/privacy/page.js",
+  "/terms/page": "app/terms/page.js",
+  "/resume/page": "app/resume/page.js",
+  "/blog/docker-kubernetes-industries/page": "app/blog/docker-kubernetes-industries/page.js"
+}

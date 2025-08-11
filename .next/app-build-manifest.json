@@ -47,13 +47,6 @@
       "static/chunks/main-app-0ebdabc95b0ce2c4.js",
       "static/chunks/app/privacy/page-e65e0a450c9ed482.js"
     ],
-    "/terms/page": [
-      "static/chunks/webpack-4631d44d9d5e19b3.js",
-      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
-      "static/chunks/240-097aff62e6051ca0.js",
-      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
-      "static/chunks/app/terms/page-ed990b9f4d180281.js"
-    ],
     "/resume/page": [
       "static/chunks/webpack-4631d44d9d5e19b3.js",
       "static/chunks/8bc8d761-1f9574afc9c856c7.js",
@@ -61,6 +54,13 @@
       "static/chunks/main-app-0ebdabc95b0ce2c4.js",
       "static/chunks/858-14fa332ce5241c48.js",
       "static/chunks/app/resume/page-3d098e366235fe68.js"
+    ],
+    "/terms/page": [
+      "static/chunks/webpack-4631d44d9d5e19b3.js",
+      "static/chunks/8bc8d761-1f9574afc9c856c7.js",
+      "static/chunks/240-097aff62e6051ca0.js",
+      "static/chunks/main-app-0ebdabc95b0ce2c4.js",
+      "static/chunks/app/terms/page-ed990b9f4d180281.js"
     ],
     "/blog/docker-kubernetes-industries/page": [
       "static/chunks/webpack-4631d44d9d5e19b3.js",

@@ -459,7 +459,7 @@ export default function Portfolio() {
 
               <motion.div className="flex flex-wrap gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }}>
                 <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#00ADB5]/25">
-                  <Link href="/resume">
+                  <Link href="https://yash-xoxo.github.io/yash-search/assets/resume/yash_resume_NEW.pdf">
                     <Download className="mr-2 h-4 w-4" />
                     Download Resume
                   </Link>

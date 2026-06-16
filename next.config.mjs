@@ -1,19 +1,21 @@
+import packageJson from './package.json' with { type: 'json' }
+
 /** @type {import('next').NextConfig} */
 const isGithubActions = process.env.GITHUB_ACTIONS === 'true'
+const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] || process.env.PAGES_REPO_NAME || ''
+const homepagePath = packageJson.homepage ? new URL(packageJson.homepage).pathname.replace(/\/$/, '') : ''
+const isUserSiteRepo = repo.endsWith('.github.io')
 
-// When building on GitHub Actions for Pages, use the repo name as basePath
-let basePath = ''
-let assetPrefix = ''
-const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] || ''
+const basePath =
+  isGithubActions && repo
+    ? isUserSiteRepo
+      ? ''
+      : `/${repo}`
+    : process.env.NODE_ENV === 'production'
+      ? homepagePath
+      : ''
 
-if (isGithubActions && repo) {
-  basePath = `/${repo}`
-  assetPrefix = `/${repo}/`
-} else if (process.env.NODE_ENV === 'production') {
-  // For GitHub Pages deployment
-  basePath = '/my-portfolio'
-  assetPrefix = '/my-portfolio/'
-}
+const assetPrefix = basePath ? `${basePath}/` : ''
 
 const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
@@ -22,7 +24,6 @@ const nextConfig = {
   // Static export for GitHub Pages
   output: 'export',
   trailingSlash: true,
-  // Apply basePath/assetPrefix for production builds
   basePath,
   assetPrefix,
 }

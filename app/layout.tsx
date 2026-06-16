@@ -11,10 +11,11 @@ export const metadata: Metadata = {
   keywords: 'DevOps, Linux, CI/CD, Kubernetes, Jenkins, Docker, Terraform, Portfolio, Yash Gupta, Automation',
   authors: [{ name: 'Yash Gupta' }],
   creator: 'Yash Gupta',
+  metadataBase: new URL('https://yash-xoxo.github.io/yash-main'),
   openGraph: {
     title: 'Yash Gupta – DevOps Portfolio',
     description: 'DevOps Engineer specializing in CI/CD, Kubernetes, and Infrastructure Automation',
-    url: 'https://yash-gupta.dev',
+    url: 'https://yash-xoxo.github.io/yash-main',
     siteName: 'Yash Gupta Portfolio',
     type: 'website',
   },

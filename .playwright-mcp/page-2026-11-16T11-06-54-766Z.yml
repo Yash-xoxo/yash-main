@@ -1,0 +1,48 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - button "Yash Gupta" [ref=e5] [cursor=pointer]
+        - generic [ref=e6]:
+          - button "Home" [ref=e7] [cursor=pointer]
+          - button "Experience" [ref=e12] [cursor=pointer]
+          - button "Projects" [ref=e17] [cursor=pointer]
+          - button "Skills & Education" [ref=e24] [cursor=pointer]
+          - button "Certificates" [ref=e28] [cursor=pointer]
+          - button "Contact" [ref=e33] [cursor=pointer]
+        - link "Resume" [ref=e38] [cursor=pointer]:
+          - /url: /Yash-Gupta-Resume.pdf
+    - main [ref=e42]:
+      - generic [ref=e45]:
+        - generic [ref=e46]:
+          - paragraph [ref=e47]: Hello, I'm
+          - heading "Yash Gupta" [level=1] [ref=e48]
+          - heading "DevOps & Cloud Developer" [level=2] [ref=e49]
+          - paragraph [ref=e50]: Passionate and dedicated DevOps Engineer with a strong drive to excel in fast-paced and challenging environments. Known for a hunger to continuously learn and adapt to emerging technologies, I thrive on solving complex problems and implementing efficient solutions. I aim to streamline processes, enhance system reliability, and contribute to the overall profitability and growth of the organization.
+          - generic [ref=e51]: Gurugram, Haryana, India
+          - generic [ref=e55]:
+            - link "Download Resume" [ref=e56] [cursor=pointer]:
+              - /url: /Yash-Gupta-Resume.pdf
+            - button "View Projects" [ref=e60] [cursor=pointer]
+            - button "Get In Touch" [ref=e63] [cursor=pointer]
+          - generic [ref=e64]:
+            - link "GitHub" [ref=e65] [cursor=pointer]:
+              - /url: https://github.com/Yash-xoxo
+            - link "LinkedIn" [ref=e69] [cursor=pointer]:
+              - /url: https://linkedin.com/in/yash-gupta-4285b8312
+            - link "Email" [ref=e74] [cursor=pointer]:
+              - /url: mailto:mail@yashx.cloud
+        - img "Yash Gupta" [ref=e79]
+    - contentinfo [ref=e80]:
+      - button "Previous section" [ref=e81] [cursor=pointer]:
+        - generic [ref=e84]: Contact
+      - generic [ref=e85]:
+        - button "Home" [ref=e86] [cursor=pointer]
+        - button "Experience" [ref=e87] [cursor=pointer]
+        - button "Projects" [ref=e88] [cursor=pointer]
+        - button "Skills & Education" [ref=e89] [cursor=pointer]
+        - button "Certificates" [ref=e90] [cursor=pointer]
+        - button "Contact" [ref=e91] [cursor=pointer]
+      - button "Next section" [ref=e92] [cursor=pointer]:
+        - generic [ref=e93]: Experience
+  - alert [ref=e96]

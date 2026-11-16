@@ -26,6 +26,7 @@ const nextConfig = {
   trailingSlash: true,
   basePath,
   assetPrefix,
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
 }
 
 export default nextConfig

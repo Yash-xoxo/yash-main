@@ -1,4 +1,4 @@
-// File: /home/yashxoxo/Documents/GitHub/yash-main/app/layout.tsx
+// File: /home/yash/yash/desktop/yash-main/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

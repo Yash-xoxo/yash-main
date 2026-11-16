@@ -1,1019 +1,629 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import Link from 'next/link'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import { Github, Linkedin, Mail, Phone, Download, ExternalLink, ChevronDown, Menu, X, Sun, Moon, CheckCircle2, AlertCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { type CSSProperties } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import {
+  ArrowUpRight,
+  Award,
+  Briefcase,
+  ChevronLeft,
+  ChevronRight,
+  Cloud,
+  Download,
+  FolderGit2,
+  GraduationCap,
+  Github,
+  Home,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Send,
+  Wrench,
+} from 'lucide-react'
 
-// Star component for twinkling effect
-const Star = ({ style }: { style: CSSProperties }) => (
-  <div className="absolute w-1 h-1 bg-white rounded-full animate-twinkle" style={style} />
-)
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || ''
+const RESUME_URL = `${BASE}/Yash-Gupta-Resume.pdf`
+const GITHUB = 'https://github.com/Yash-xoxo'
+const LINKEDIN = 'https://linkedin.com/in/yash-gupta-4285b8312'
+const EMAIL = 'mail@yashx.cloud'
+const PHONE = '+91 78394 91779'
 
-// Shooting star component
-const ShootingStar = ({ delay }: { delay: number }) => {
-  const width = typeof window !== 'undefined' ? window.innerWidth : 1200
-  const height = typeof window !== 'undefined' ? window.innerHeight : 800
-  return (
-    <motion.div
-      className="absolute w-1 h-1 bg-gradient-to-r from-transparent via-white to-transparent rounded-full"
-      initial={{ x: -100, y: -100, opacity: 0, scale: 0 }}
-      animate={{ x: width + 100, y: height + 100, opacity: [0, 1, 1, 0], scale: [0, 1, 1, 0] }}
-      transition={{
-        duration: 2,
-        delay,
-        repeat: Infinity,
-        repeatDelay: Math.random() * 10 + 5,
-        ease: 'easeOut',
-      }}
-      style={{
-        boxShadow: '0 0 6px 2px rgba(255, 255, 255, 0.8)',
-        filter: 'blur(0.5px)',
-      }}
-    />
-  )
-}
+/* ───────────────────────────── data (from resume) ───────────────────────────── */
 
-// Stars background component
+const experience = [
+  {
+    role: 'DevOps Engineer',
+    company: 'Savitron.ai',
+    color: '#00ADB5',
+    points: [
+      'Managed Linux servers, Docker-based applications, and cloud infrastructure.',
+      'Built and maintained CI/CD pipelines using Jenkins and GitHub.',
+      'Automated deployments and infrastructure management using scripting and Infrastructure as Code practices.',
+      'Configured reverse proxies, SSL/TLS, monitoring, and production environments to ensure reliability and availability.',
+    ],
+  },
+  {
+    role: 'DevOps & Cloud Intern',
+    company: 'LinuxWorld Informatics Pvt. Ltd.',
+    color: '#F2A154',
+    points: [
+      'Worked with Docker, Kubernetes, AWS, Terraform, and Ansible to deploy and manage cloud infrastructure.',
+      'Built CI/CD pipelines using Jenkins for automated build, testing, and deployment.',
+      'Implemented monitoring with Prometheus and Grafana and managed Linux-based servers.',
+      'Developed a Streamlit-based automation platform integrating DevOps tools through a centralized dashboard.',
+    ],
+  },
+]
+
+const projects = [
+  {
+    title: 'Proxmox Virtualization Infrastructure',
+    sub: 'Type-1 Hypervisor Deployment',
+    concept: 'Enterprise-grade virtualization stack enabling isolated compute environments for development, testing, and automation workloads.',
+    stack: ['Proxmox VE', 'KVM/QEMU', 'LXC', 'Debian', 'ZFS'],
+    highlights: [
+      'Provisioned multi-VM cluster with high-efficiency virtualization',
+      'Configured virtual networking, storage pools, ISO provisioning, and containerized workloads',
+      'Enabled a full on-prem hypervisor capability for scalable DevOps experiments',
+    ],
+  },
+  {
+    title: 'n8n-Driven AI Workflow Engine',
+    sub: 'LLM-enhanced data pipelines',
+    concept: 'Autonomous news, DevOps insights, and LLM-enhanced data pipelines.',
+    stack: ['n8n', 'Gemini API', 'Telegram/Discord Bots', 'Docker', 'RSS'],
+    highlights: [
+      'Automated scheduling engine (45-minute continuous aggregation cycle)',
+      'LLM-powered summarization for Kubernetes/Cloud/DevOps feeds',
+      'Multi-platform publishing via chatbots',
+    ],
+  },
+  {
+    title: 'Containerized Full-Stack Travel Platform',
+    sub: 'Microservice architecture',
+    concept: 'End-to-end travel booking ecosystem built on a containerized microservice architecture.',
+    stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Docker Compose'],
+    highlights: [
+      'Secure auth workflows, booking CRUD flows, and service isolation',
+      'Modern glass-morphism UI across devices',
+      'Full containerization for seamless deployment',
+    ],
+  },
+  {
+    title: 'Kubernetes Auto-Scaling Web Cluster',
+    sub: 'Self-healing infrastructure',
+    concept: 'Self-healing, load-adaptive web infrastructure modeling production cloud behavior.',
+    stack: ['Kubernetes (HPA)', 'Minikube', 'Docker', 'Apache HTTPD'],
+    highlights: [
+      'CPU-driven horizontal autoscaling (HPA)',
+      'Simulated real-world load with 10+ replica pods',
+      'Highly resilient NodePort exposure with live traffic testing',
+    ],
+  },
+  {
+    title: 'CI/CD Pipeline for Python Microservices',
+    sub: 'Automated build → deploy',
+    concept: 'Automated integration and deployment lifecycle for Python workloads.',
+    stack: ['Jenkins', 'GitHub', 'Docker', 'Pytest'],
+    highlights: [
+      'Commit-triggered Jenkins pipeline with automated tests',
+      'Docker image build-push-deploy flow',
+      'Production-grade CI/CD simulation for microservices',
+    ],
+  },
+  {
+    title: 'Offline AI Model Ecosystem',
+    sub: 'Air-gapped LLM platform',
+    concept: 'Local compute environment for running LLMs and vision models without internet connectivity.',
+    stack: ['Ollama', 'Hugging Face', 'Open WebUI', 'DeepSeek', 'LLaMA 3.1', 'Gemma'],
+    highlights: [
+      'Multi-model management with hardware-accelerated inference',
+      'Fully air-gapped AI development platform',
+      'Integrated text and vision generation workflows',
+    ],
+  },
+]
+
+const skillGroups = [
+  { name: 'Core DevOps Tools', items: ['Docker', 'Kubernetes', 'Jenkins', 'Terraform', 'Ansible', 'Git', 'GitHub Actions'] },
+  { name: 'Cloud Platforms', items: ['AWS EC2', 'S3', 'IAM', 'VPC', 'CloudWatch'] },
+  { name: 'Monitoring & Observability', items: ['Prometheus', 'Grafana', 'Node Exporter'] },
+  { name: 'Infrastructure & Automation', items: ['CI/CD Pipelines', 'IaC', 'Containerization'] },
+  { name: 'Operating Systems', items: ['Arch Linux', 'Ubuntu', 'RHEL', 'Fedora'] },
+  { name: 'Programming & Scripting', items: ['Python', 'Bash', 'Flask'] },
+]
+
+const certGroups = [
+  {
+    issuer: 'Amazon Web Services Training and Certification',
+    date: 'Oct 2025',
+    color: '#F2A154',
+    items: ['AWS Cloud Quest: Generative AI Practitioner – Training Badge', 'AWS Cloud Quest: Cloud Practitioner – Training Badge'],
+  },
+  {
+    issuer: 'Linux Foundation Training',
+    date: 'Nov 2025 & May 2025',
+    color: '#38BDF8',
+    items: ['Blockchain: Understanding Its Uses and Implications (LFS170)', 'Kubernetes: 入門 (LFS158JP)'],
+  },
+  {
+    issuer: 'LinuxWorld Informatics Private Limited',
+    date: 'Aug 2025 & Jul 2025',
+    color: '#F87171',
+    items: ['JASBAA 4.0 – Startup Show Casting (TRAVOZOM)', 'AWS Cloud With Artificial Intelligence Workshop'],
+  },
+  {
+    issuer: 'Udemy',
+    date: 'Nov 2024 & Jun 2025',
+    color: '#A78BFA',
+    items: ['Linux Red Hat Certified System Administrator (RHCSA – EX200)', 'PostgreSQL Bootcamp'],
+  },
+]
+
+const blogs = [
+  { title: 'Docker & Kubernetes: Use Cases in Industries', href: '/blog/docker-kubernetes-industries' },
+  { title: 'Monitoring in the Wild: Prometheus & Grafana', href: '/blog/monitoring-prometheus-grafana' },
+  { title: 'Linux at Work: RHEL 9 and Other Distros', href: '/blog/redhat-rhel9-linux-distros' },
+]
+
+const sections = [
+  { id: 'home', label: 'Home', icon: Home },
+  { id: 'experience', label: 'Experience', icon: Briefcase },
+  { id: 'projects', label: 'Projects', icon: FolderGit2 },
+  { id: 'skills', label: 'Skills & Education', icon: Wrench },
+  { id: 'certificates', label: 'Certificates', icon: Award },
+  { id: 'contact', label: 'Contact', icon: Mail },
+] as const
+
+type SectionId = (typeof sections)[number]['id']
+
+/* ───────────────────────────── background ───────────────────────────── */
+
 const StarsBackground = () => {
-  const [stars, setStars] = useState<Array<{ id: number; left: string; top: string; animationDelay: string }>>([])
-  const [shootingStars, setShootingStars] = useState<Array<{ id: number; delay: number }>>([])
-
+  const [stars, setStars] = useState<Array<{ id: number; style: CSSProperties }>>([])
   useEffect(() => {
-    const generateStars = () => {
-      const newStars = []
-      for (let i = 0; i < 150; i++) {
-        newStars.push({
-          id: i,
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-          animationDelay: `${Math.random() * 3}s`,
-        })
-      }
-      setStars(newStars)
-    }
-
-    const generateShootingStars = () => {
-      const newShootingStars = []
-      for (let i = 0; i < 5; i++) {
-        newShootingStars.push({ id: i, delay: Math.random() * 8 })
-      }
-      setShootingStars(newShootingStars)
-    }
-
-    generateStars()
-    generateShootingStars()
+    setStars(
+      Array.from({ length: 110 }, (_, id) => ({
+        id,
+        style: { left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 3}s` },
+      })),
+    )
   }, [])
-
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {stars.map((star) => (
-        <Star key={star.id} style={{ left: star.left, top: star.top, animationDelay: star.animationDelay }} />
+      {stars.map((s) => (
+        <div key={s.id} className="absolute w-1 h-1 bg-white rounded-full animate-twinkle" style={s.style} />
       ))}
-      {shootingStars.map((s) => (
-        <ShootingStar key={s.id} delay={s.delay} />
-      ))}
+      <div className="absolute top-10 left-10 w-48 h-48 bg-[#00ADB5]/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-10 right-10 w-64 h-64 bg-[#00ADB5]/10 rounded-full blur-3xl" />
     </div>
   )
 }
 
-export default function Portfolio() {
-  const [activeFilter, setActiveFilter] = useState('All')
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(true)
-  const { scrollYProgress } = useScroll()
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
-  const y = useTransform(smoothProgress, [0, 1], ['0%', '50%'])
+/* ───────────────────────────── small pieces ───────────────────────────── */
 
-  const skills = [
-    { name: 'Docker', category: 'DevOps', icon: '🐳' },
-    { name: 'Kubernetes', category: 'DevOps', icon: '☸️' },
-    { name: 'Jenkins', category: 'DevOps', icon: '🔧' },
-    { name: 'AWS', category: 'DevOps', icon: '☁️' },
-    { name: 'Terraform', category: 'Infra', icon: '🏗️' },
-    { name: 'Ansible', category: 'Infra', icon: '⚙️' },
-    { name: 'Flask', category: 'Code', icon: '🐍' },
-    { name: 'Git', category: 'Code', icon: '📝' },
-    { name: 'Linux', category: 'DevOps', icon: '🐧' },
-    { name: 'Bash', category: 'Code', icon: '💻' },
-    { name: 'CI/CD', category: 'DevOps', icon: '🔄' },
-    { name: 'Systemd', category: 'DevOps', icon: '⚡' },
-    { name: 'Server Monitoring', category: 'Monitoring', icon: '📊' },
-    { name: 'Log Reader', category: 'Monitoring', icon: '📋' },
-    { name: 'Troubleshooting', category: 'Monitoring', icon: '🔍' },
-    { name: 'Prometheus', category: 'Monitoring', icon: '📈' },
-    { name: 'Grafana', category: 'Monitoring', icon: '📊' },
-    { name: 'Generative AI', category: 'AI', icon: '🤖' },
-    { name: 'Prompt Expert', category: 'AI', icon: '💬' },
-  ]
+const Heading = ({ children, accent }: { children: React.ReactNode; accent: string }) => (
+  <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-5 text-center">
+    {children} <span className="text-[#00ADB5]">{accent}</span>
+  </h2>
+)
 
-  const projects = [
-    {
-      title: 'Deployed Containerized Microservices on AWS ECS',
-      description:
-        'Successfully deployed and managed containerized microservices architecture on AWS ECS with auto-scaling and load balancing',
-      tags: ['AWS ECS', 'Docker', 'Microservices', 'Auto-scaling'],
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download.png?raw=true',
-    },
-    {
-      title: 'Kubernetes Cluster Management',
-      description: 'Managed and orchestrated Kubernetes clusters for production workloads with high availability and fault tolerance',
-      tags: ['Kubernetes', 'Cluster Management', 'Production', 'Orchestration'],
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(1).png?raw=true',
-    },
-    {
-      title: 'Infrastructure as Code using Terraform',
-      description: 'Implemented Infrastructure as Code practices using Terraform for automated cloud resource provisioning',
-      tags: ['Terraform', 'IaC', 'Cloud Provisioning', 'Automation'],
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/terra.png?raw=true',
-    },
-    {
-      title: 'Implemented Monitoring and Alerting Systems using Prometheus and Grafana',
-      description: 'Built comprehensive monitoring and alerting infrastructure using Prometheus for metrics collection and Grafana for visualization',
-      tags: ['Prometheus', 'Grafana', 'Monitoring', 'Alerting'],
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(2).png?raw=true',
-    },
-    {
-      title: 'CI/CD Pipeline with Jenkins',
-      description:
-        'Automated deployment pipeline with Jenkins, Docker, and Kubernetes integration for seamless software delivery',
-      tags: ['Jenkins', 'Docker', 'CI/CD', 'Kubernetes'],
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(3).png?raw=true',
-    },
-    {
-      title: 'Menu-Based Python Automation',
-      description: 'Interactive CLI tool for system automation and task management with intuitive menu-driven interface',
-      tags: ['Python', 'Automation', 'CLI', 'System Admin'],
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(4).png?raw=true',
-    },
-    {
-      title: 'Data Analytics Dashboard',
-      description: 'Real-time data visualization dashboard with monitoring capabilities and interactive charts',
-      tags: ['Analytics', 'Dashboard', 'Monitoring', 'Visualization'],
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(6).png?raw=true',
-    },
-    {
-      title: 'Stepper Motor Control with PS3 Joystick',
-      description: 'Hardware control system using Python and PS3 controller integration for precise motor movements',
-      tags: ['Python', 'Hardware', 'Control', 'IoT'],
-      link: 'https://github.com/Yash-xoxo',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/Google_AI_Studio_2025-08-08T07_00_36.070Z.png?raw=true',
-    },
-    {
-      title: 'Custom Compiler in Python',
-      description: 'Built a custom programming language compiler from scratch with lexical analysis and code generation',
-      tags: ['Python', 'Compiler', 'Language', 'Parser'],
-      link: 'https://github.com/Yash-xoxo',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(5).png?raw=true',
-    },
-    {
-      title: 'Messaging Automation Tool',
-      description:
-        'Multi-platform messaging CLI tool for WhatsApp, Twitter, Gmail, and SMS with scheduling features',
-      tags: ['Python', 'Automation', 'Messaging', 'API'],
-      link: 'https://github.com/Yash-xoxo',
-      image: 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(7).png?raw=true',
-    },
-  ]
+const Chip = ({ children }: { children: React.ReactNode }) => (
+  <span className="px-2 py-0.5 rounded-md bg-[#00ADB5]/15 text-[#00ADB5] text-xs border border-[#00ADB5]/25">{children}</span>
+)
 
-  const certifications = [
-    {
-      title: 'DevOps and Cloud',
-      platform: 'LinuxWorld',
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '☁️',
-    },
-    {
-      title: 'RedHat RHCSA – System Administration',
-      platform: 'LinkedIn',
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🎓',
-    },
-    {
-      title: 'Azure Cognitive Services',
-      platform: 'Microsoft / Coursera',
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '☁️',
-    },
-    {
-      title: 'AWS Technical Essentials',
-      platform: 'AWS via LinkedIn',
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🏆',
-    },
-    {
-      title: 'Hands-on Challenges in DevOps Tools',
-      platform: 'LinkedIn',
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🔧',
-    },
-    {
-      title: 'Ultimate Linux Troubleshooting Training (2025)',
-      platform: 'Udemy',
-      link: 'https://linkedin.com/in/yash-gupta-4285b8312',
-      icon: '🐧',
-    },
-  ]
+const panel = 'bg-[#393E46]/70 backdrop-blur-sm border border-[#00ADB5]/25 rounded-xl'
 
-  const timeline = [
-    {
-      year: '2020',
-      title: 'Class 12 - PCM',
-      description:
-        'Completed Higher Secondary Education with Physics, Chemistry, and Mathematics',
-      icon: '📚',
-      type: 'education',
-      details: {
-        subjects: ['Physics', 'Chemistry', 'Mathematics'],
-        board: 'CBSE',
-        focus: 'Science and Mathematics foundation',
-      },
-    },
-    {
-      year: '2022–2026',
-      title: 'B.Tech in Computer Science',
-      description:
-        'Pursuing Bachelor of Technology in Computer Science Engineering',
-      icon: '🎓',
-      type: 'education',
-      details: {
-        specialization: 'Computer Science Engineering',
-        focus: 'DevOps, Cloud Computing, Software Development',
-        currentYear: '3rd Year',
-      },
-    },
-    {
-      year: 'May 2025',
-      title: 'Techvyom Pen Plotter Project Presentation',
-      description: 'Presented innovative pen plotter project at college tech fest',
-      icon: '🛠️',
-      type: 'project',
-      details: {
-        event: 'College Tech Fest',
-        achievement: 'Best Innovation Award',
-        technology: 'Hardware Control Systems',
-      },
-    },
-    {
-      year: '2024',
-      title: 'DevOps Internship @ Linux World',
-      description: 'Specialized in Cloud, CI/CD, and Automation technologies',
-      icon: '☁️',
-      type: 'experience',
-      details: {
-        duration: '6 months',
-        technologies: ['Docker', 'Kubernetes', 'Jenkins', 'AWS'],
-        achievements: 'Automated deployment processes',
-      },
-    },
-  ]
+/* ───────────────────────────── sections ───────────────────────────── */
 
-  const aspirations = [
-    {
-      title: 'Launch a Cloud-native DevOps Product',
-      description: 'Build and launch a comprehensive DevOps platform',
-      icon: '🚀',
-    },
-    {
-      title: 'Teach DevOps via LinkedIn/YouTube',
-      description: 'Share knowledge and mentor the next generation',
-      icon: '📚',
-    },
-    {
-      title: 'Contribute to Arch Linux/Open Source',
-      description: 'Give back to the open source community',
-      icon: '🐧',
-    },
-    {
-      title: 'Expand into GitOps & AI-based Infrastructure',
-      description: 'Explore cutting-edge infrastructure technologies',
-      icon: '🤖',
-    },
-  ]
+function HomeSection({ go }: { go: (id: SectionId) => void }) {
+  return (
+    <div className="h-full flex items-center justify-center">
+      <div className="grid md:grid-cols-[1fr_auto] gap-8 md:gap-14 items-center max-w-5xl w-full">
+        <div className="order-2 md:order-1">
+          <p className="text-[#00ADB5] font-mono text-sm mb-2">Hello, I&apos;m</p>
+          <h1 className="text-4xl md:text-6xl font-bold mb-2">Yash Gupta</h1>
+          <h2 className="text-xl md:text-2xl text-[#EEEEEE]/80 mb-4">DevOps &amp; Cloud Developer</h2>
+          <p className="text-[#EEEEEE]/70 leading-relaxed text-sm md:text-base mb-5">
+            Passionate and dedicated <span className="text-[#00ADB5] font-semibold">DevOps Engineer</span> with a strong drive to excel in fast-paced and
+            challenging environments. Known for a hunger to continuously learn and adapt to emerging technologies, I thrive on solving complex problems and
+            implementing efficient solutions. I aim to streamline processes, enhance system reliability, and contribute to the overall profitability and
+            growth of the organization.
+          </p>
+          <div className="flex items-center gap-2 text-sm text-[#EEEEEE]/60 mb-5">
+            <MapPin className="h-4 w-4 text-[#00ADB5]" /> Gurugram, Haryana, India
+          </div>
+          <div className="flex flex-wrap gap-3 mb-5">
+            <a
+              href={RESUME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-[#00ADB5] text-white text-sm font-medium hover:bg-[#00ADB5]/80 transition hover:scale-105"
+            >
+              <Download className="mr-2 h-4 w-4" /> Download Resume
+            </a>
+            <button
+              onClick={() => go('projects')}
+              className="inline-flex items-center px-4 py-2 rounded-lg border border-[#00ADB5] text-[#00ADB5] text-sm font-medium hover:bg-[#00ADB5] hover:text-white transition"
+            >
+              View Projects <ChevronRight className="ml-1 h-4 w-4" />
+            </button>
+            <button
+              onClick={() => go('contact')}
+              className="inline-flex items-center px-4 py-2 rounded-lg border border-[#EEEEEE]/30 text-[#EEEEEE] text-sm font-medium hover:border-[#00ADB5] hover:text-[#00ADB5] transition"
+            >
+              Get In Touch
+            </button>
+          </div>
+          <div className="flex gap-5">
+            {[
+              { href: GITHUB, Icon: Github, label: 'GitHub' },
+              { href: LINKEDIN, Icon: Linkedin, label: 'LinkedIn' },
+              { href: `mailto:${EMAIL}`, Icon: Mail, label: 'Email' },
+            ].map(({ href, Icon, label }) => (
+              <a key={label} href={href} aria-label={label} className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition hover:scale-110">
+                <Icon className="h-6 w-6" />
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="order-1 md:order-2 flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://github.com/Yash-xoxo/yash-search/blob/main/assets/img/passport-new.jpg?raw=true"
+            alt="Yash Gupta"
+            className="w-36 h-36 md:w-72 md:h-72 rounded-full border-4 border-[#00ADB5] shadow-2xl object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
 
-  const filteredSkills = activeFilter === 'All' ? skills : skills.filter((s) => s.category === activeFilter)
+function ExperienceSection() {
+  return (
+    <div className="h-full flex flex-col justify-center max-w-6xl mx-auto w-full">
+      <Heading accent="Experience">Work</Heading>
+      <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+        {experience.map((job) => (
+          <div key={job.company} className={`${panel} p-5`} style={{ borderTop: `3px solid ${job.color}` }}>
+            <h3 className="text-lg md:text-xl font-bold" style={{ color: job.color }}>
+              {job.role}
+            </h3>
+            <p className="text-[#EEEEEE]/60 text-sm mb-3">{job.company}</p>
+            <ul className="space-y-2 text-sm text-[#EEEEEE]/80 leading-relaxed">
+              {job.points.map((p) => (
+                <li key={p} className="flex gap-2">
+                  <span className="text-[#00ADB5] mt-1">▹</span>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
-    }
-    setIsMenuOpen(false)
+function ProjectsSection() {
+  const [i, setI] = useState(0)
+  const p = projects[i]
+  return (
+    <div className="h-full flex flex-col justify-center max-w-6xl mx-auto w-full">
+      <Heading accent="Projects">Featured</Heading>
+      <div className="grid md:grid-cols-[18rem_1fr] gap-4">
+        <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-1">
+          {projects.map((proj, idx) => (
+            <button
+              key={proj.title}
+              onClick={() => setI(idx)}
+              className={`text-left shrink-0 md:shrink w-56 md:w-auto px-3 py-2 rounded-lg border text-sm transition ${
+                idx === i
+                  ? 'bg-[#00ADB5] border-[#00ADB5] text-white'
+                  : 'bg-[#393E46]/60 border-[#00ADB5]/20 text-[#EEEEEE]/80 hover:border-[#00ADB5]'
+              }`}
+            >
+              <span className="font-mono opacity-70 mr-1">{idx + 1}.</span>
+              {proj.title}
+            </button>
+          ))}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className={`${panel} p-5 md:p-6`}
+          >
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <h3 className="text-xl font-bold text-[#00ADB5]">{p.title}</h3>
+                <p className="text-sm text-[#EEEEEE]/60">{p.sub}</p>
+              </div>
+              <a
+                href={GITHUB}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center text-sm text-[#00ADB5] hover:text-white transition"
+              >
+                Demo <ArrowUpRight className="ml-1 h-4 w-4" />
+              </a>
+            </div>
+            <p className="text-xs uppercase tracking-wider text-[#F2A154] mb-1">Concept</p>
+            <p className="text-sm text-[#EEEEEE]/80 mb-3">{p.concept}</p>
+            <p className="text-xs uppercase tracking-wider text-[#F2A154] mb-1">Tech Stack</p>
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {p.stack.map((s) => (
+                <Chip key={s}>{s}</Chip>
+              ))}
+            </div>
+            <p className="text-xs uppercase tracking-wider text-[#F2A154] mb-1">Highlights</p>
+            <ul className="space-y-1.5 text-sm text-[#EEEEEE]/80">
+              {p.highlights.map((h) => (
+                <li key={h} className="flex gap-2">
+                  <span className="text-[#00ADB5]">●</span>
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+
+function SkillsSection() {
+  return (
+    <div className="h-full flex flex-col justify-center max-w-6xl mx-auto w-full">
+      <Heading accent="& Education">Skills</Heading>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+        {skillGroups.map((g) => (
+          <div key={g.name} className={`${panel} p-3`}>
+            <h3 className="text-sm font-semibold text-[#00ADB5] mb-2">{g.name}</h3>
+            <div className="flex flex-wrap gap-1.5">
+              {g.items.map((s) => (
+                <Chip key={s}>{s}</Chip>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className={`${panel} p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2`}>
+        <div className="flex gap-3">
+          <GraduationCap className="h-8 w-8 text-[#00ADB5] shrink-0" />
+          <div>
+            <h3 className="font-bold">Bachelor&apos;s Degree in Computer Science &amp; Engineering</h3>
+            <p className="text-sm text-[#EEEEEE]/60">Dr. A.P.J. Abdul Kalam Technical University</p>
+            <p className="text-xs text-[#EEEEEE]/70 mt-1">
+              Specialized in <b>Software Engineering</b> and <b>Database Management</b>. Learned about <b>Operating System</b> behavior and{' '}
+              <b>Algorithms</b> with <b>Mathematics</b>.
+            </p>
+          </div>
+        </div>
+        <p className="text-sm font-semibold text-[#EEEEEE]/80 md:text-right shrink-0">
+          August 2022 – July 2026
+          <br />
+          <span className="font-normal text-[#EEEEEE]/60">Bareilly</span>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function CertificatesSection() {
+  return (
+    <div className="h-full flex flex-col justify-center max-w-6xl mx-auto w-full">
+      <Heading accent="Certificates">Training &amp;</Heading>
+      <div className="grid md:grid-cols-2 gap-3 md:gap-4">
+        {certGroups.map((g) => (
+          <div key={g.issuer} className={`${panel} p-4`} style={{ borderLeft: `4px solid ${g.color}` }}>
+            <div className="flex items-start gap-2 mb-2">
+              <Cloud className="h-4 w-4 mt-0.5 shrink-0" style={{ color: g.color }} />
+              <div>
+                <p className="text-sm font-semibold" style={{ color: g.color }}>
+                  {g.issuer}
+                </p>
+                <p className="text-xs text-[#EEEEEE]/50">{g.date}</p>
+              </div>
+            </div>
+            <ul className="space-y-1.5 text-sm text-[#EEEEEE]/85">
+              {g.items.map((c) => (
+                <li key={c} className="flex gap-2">
+                  <span>★</span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm">
+        <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="text-[#00ADB5] hover:text-white inline-flex items-center">
+          View certificates on LinkedIn <ArrowUpRight className="ml-1 h-4 w-4" />
+        </a>
+      </div>
+    </div>
+  )
+}
+
+function ContactSection() {
+  const [sent, setSent] = useState(false)
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const f = new FormData(e.currentTarget)
+    const name = String(f.get('name') || '')
+    const email = String(f.get('email') || '')
+    const message = String(f.get('message') || '')
+    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(`Portfolio contact from ${name}`)}&body=${encodeURIComponent(
+      `From: ${name} <${email}>\n\n${message}`,
+    )}`
+    setSent(true)
   }
+  const field =
+    'w-full rounded-lg bg-[#222831]/80 border border-[#00ADB5]/30 px-3 py-2 text-sm text-[#EEEEEE] placeholder:text-[#EEEEEE]/40 focus:outline-none focus:border-[#00ADB5]'
+  return (
+    <div className="h-full flex flex-col justify-center max-w-5xl mx-auto w-full">
+      <Heading accent="Touch">Get In</Heading>
+      <div className="grid md:grid-cols-2 gap-4 md:gap-8">
+        <div className="space-y-4">
+          {[
+            { Icon: Mail, label: 'Email', value: EMAIL, href: `mailto:${EMAIL}` },
+            { Icon: Phone, label: 'Phone', value: PHONE, href: 'tel:+917839491779' },
+            { Icon: Github, label: 'GitHub', value: 'github.com/Yash-xoxo', href: GITHUB },
+            { Icon: Linkedin, label: 'LinkedIn', value: 'Yash Gupta', href: LINKEDIN },
+          ].map(({ Icon, label, value, href }) => (
+            <a key={label} href={href} className="flex items-center gap-4 group">
+              <Icon className="h-6 w-6 text-[#00ADB5]" />
+              <div>
+                <p className="text-xs text-[#EEEEEE]/50">{label}</p>
+                <p className="text-[#EEEEEE]/90 group-hover:text-[#00ADB5] transition">{value}</p>
+              </div>
+            </a>
+          ))}
+          <div className="pt-2">
+            <p className="text-xs text-[#EEEEEE]/50 mb-1">Blog</p>
+            <div className="flex flex-col gap-1">
+              {blogs.map((b) => (
+                <Link key={b.href} href={b.href} className="text-sm text-[#EEEEEE]/70 hover:text-[#00ADB5] transition">
+                  → {b.title}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+        <form onSubmit={onSubmit} className={`${panel} p-4 space-y-3`}>
+          <input name="name" placeholder="Your Name" required className={field} />
+          <input name="email" type="email" placeholder="Your Email" required className={field} />
+          <textarea name="message" placeholder="Your Message" rows={4} required className={`${field} resize-none`} />
+          <button className="w-full inline-flex items-center justify-center py-2 rounded-lg bg-[#00ADB5] text-white text-sm font-medium hover:bg-[#00ADB5]/80 transition">
+            <Send className="mr-2 h-4 w-4" /> Send Message
+          </button>
+          {sent && <p className="text-xs text-green-400">Opening your email client…</p>}
+        </form>
+      </div>
+    </div>
+  )
+}
 
-  useEffect(() => {
-    const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -100px 0px' }
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) entry.target.classList.add('animate-in')
-      })
-    }, observerOptions)
-    const elements = document.querySelectorAll('.scroll-animate')
-    elements.forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
+/* ───────────────────────────── page shell ───────────────────────────── */
+
+export default function Portfolio() {
+  const [active, setActive] = useState<SectionId>('home')
+  const idx = sections.findIndex((s) => s.id === active)
+
+  const go = useCallback((id: SectionId) => {
+    setActive(id)
+    try {
+      history.replaceState(null, '', `#${id}`)
+    } catch {}
   }, [])
 
-  const handleFilterChange = (filter: string) => setActiveFilter(filter)
+  const step = useCallback(
+    (d: number) => go(sections[(idx + d + sections.length) % sections.length].id),
+    [idx, go],
+  )
 
-  // Contact form state
-  const [formState, setFormState] = useState({ status: 'idle' as const, message: '' })
-  const [isPending, setIsPending] = useState(false)
+  // restore section from hash
+  useEffect(() => {
+    const h = window.location.hash.slice(1) as SectionId
+    if (sections.some((s) => s.id === h)) setActive(h)
+  }, [])
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsPending(true)
-    try {
-      // If running as static export (GitHub Pages), fall back to mailto
-      const isStatic = typeof window !== 'undefined' && window.location.protocol === 'file:'
-      if (isStatic || typeof fetch === 'undefined') {
-        const name = (formData.get('name') || '').toString()
-        const email = (formData.get('email') || '').toString()
-        const message = (formData.get('message') || '').toString()
-        const mailto = `mailto:yashg5577@gmail.com?subject=Portfolio%20Contact%20from%20${encodeURIComponent(name)}&body=${encodeURIComponent(
-          `From: ${name} <${email}>\n\n${message}`,
-        )}`
-        window.location.href = mailto
-        setFormState({ status: 'success', message: 'Opening your email client…' })
-      } else {
-        const response = await fetch('/api/send-message', {
-          method: 'POST',
-          body: formData,
-        })
-        const result = await response.json()
-        setFormState(result)
-      }
-    } catch (error) {
-      setFormState({ status: 'error', message: 'Failed to send message. Please try again.' })
-    } finally {
-      setIsPending(false)
+  // keyboard navigation (not while typing)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement
+      if (['INPUT', 'TEXTAREA'].includes(t.tagName)) return
+      if (e.key === 'ArrowRight') step(1)
+      if (e.key === 'ArrowLeft') step(-1)
     }
-  }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [step])
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
-      <div className="bg-[#222831] text-[#EEEEEE] min-h-screen relative">
-        <StarsBackground />
+    <div className="dark h-[100dvh] overflow-hidden bg-[#222831] text-[#EEEEEE] relative flex flex-col">
+      <StarsBackground />
 
-        {/* Navigation */}
-        <nav className="fixed top-0 w-full bg-[#222831]/95 backdrop-blur-md z-50 border-b border-[#393E46]/50 transition-all duration-300">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }} className="text-xl font-bold text-[#00ADB5]">
-              Yash Gupta
-            </motion.div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex space-x-8">
-              {['About', 'Timeline', 'Skills', 'Projects', 'Certifications', 'Contact'].map((item, index) => (
-                <motion.button
-                  key={item}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }}
-                  onClick={() => scrollToSection(item.toLowerCase())}
-                  className="hover:text-[#00ADB5] transition-all duration-300 relative group"
-                >
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#00ADB5] transition-all duration-300 group-hover:w-full"></span>
-                </motion.button>
-              ))}
-            </div>
-
-            {/* Theme Toggle & Mobile Menu */}
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" onClick={() => setIsDarkMode(!isDarkMode)} className="text-[#EEEEEE] hover:text-[#00ADB5] transition-all duration-300">
-                <motion.div animate={{ rotate: isDarkMode ? 0 : 180 }} transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                  {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                </motion.div>
-              </Button>
-
-              <Button variant="ghost" size="sm" className="md:hidden text-[#EEEEEE] transition-all duration-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                <motion.div animate={{ rotate: isMenuOpen ? 90 : 0 }} transition={{ duration: 0.3 }}>
-                  {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                </motion.div>
-              </Button>
-            </div>
+      {/* Top navigation */}
+      <nav className="relative z-20 shrink-0 border-b border-[#393E46]/60 bg-[#222831]/90 backdrop-blur-md">
+        <div className="px-4 md:px-8 py-2 flex items-center gap-4">
+          <button onClick={() => go('home')} className="text-lg font-bold text-[#00ADB5] shrink-0">
+            Yash Gupta
+          </button>
+          <div className="flex-1 flex md:justify-center gap-1 overflow-x-auto no-scrollbar">
+            {sections.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => go(id)}
+                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition ${
+                  active === id ? 'bg-[#00ADB5] text-white' : 'text-[#EEEEEE]/70 hover:text-[#00ADB5]'
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{label}</span>
+              </button>
+            ))}
           </div>
-
-          {/* Mobile Navigation */}
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: isMenuOpen ? 1 : 0, height: isMenuOpen ? 'auto' : 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="md:hidden bg-[#393E46]/95 backdrop-blur-md border-t border-[#00ADB5]/30 overflow-hidden"
+          <a
+            href={RESUME_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex shrink-0 items-center px-3 py-1.5 rounded-lg border border-[#00ADB5] text-[#00ADB5] text-sm hover:bg-[#00ADB5] hover:text-white transition"
           >
-            <div className="container mx-auto px-4 py-4 space-y-4">
-              {['About', 'Timeline', 'Skills', 'Projects', 'Certifications', 'Contact'].map((item, index) => (
-                <motion.button
-                  key={item}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: isMenuOpen ? 1 : 0, x: isMenuOpen ? 0 : -20 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  onClick={() => scrollToSection(item.toLowerCase())}
-                  className="block w-full text-left hover:text-[#00ADB5] transition-all duration-300 py-2"
-                >
-                  {item}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-        </nav>
+            <Download className="mr-1.5 h-4 w-4" /> Resume
+          </a>
+        </div>
+      </nav>
 
-        {/* Hero Section */}
-        <section id="about" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
-          <motion.div style={{ y }} className="absolute inset-0 opacity-10">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-20 left-10 w-32 h-32 bg-[#00ADB5] rounded-full blur-3xl"
+      {/* Content: exactly one section at a time, no page scroll */}
+      <main className="relative z-10 flex-1 min-h-0 px-4 md:px-10 py-4 overflow-y-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+            className="min-h-full md:h-full"
+          >
+            {active === 'home' && <HomeSection go={go} />}
+            {active === 'experience' && <ExperienceSection />}
+            {active === 'projects' && <ProjectsSection />}
+            {active === 'skills' && <SkillsSection />}
+            {active === 'certificates' && <CertificatesSection />}
+            {active === 'contact' && <ContactSection />}
+          </motion.div>
+        </AnimatePresence>
+      </main>
+
+      {/* Bottom bar: prev / dots / next */}
+      <footer className="relative z-20 shrink-0 border-t border-[#393E46]/60 bg-[#222831]/90 backdrop-blur-md px-4 md:px-8 py-2 flex items-center justify-between text-sm">
+        <button onClick={() => step(-1)} className="inline-flex items-center text-[#EEEEEE]/70 hover:text-[#00ADB5] transition" aria-label="Previous section">
+          <ChevronLeft className="h-5 w-5" />
+          <span className="hidden sm:inline">{sections[(idx - 1 + sections.length) % sections.length].label}</span>
+        </button>
+        <div className="flex items-center gap-2">
+          {sections.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => go(s.id)}
+              aria-label={s.label}
+              className={`h-2 rounded-full transition-all ${active === s.id ? 'w-6 bg-[#00ADB5]' : 'w-2 bg-[#EEEEEE]/30 hover:bg-[#00ADB5]/60'}`}
             />
-            <motion.div
-              animate={{ scale: [1.2, 1, 1.2], opacity: [0.6, 0.3, 0.6] }}
-              transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-20 right-10 w-48 h-48 bg-[#00ADB5] rounded-full blur-3xl"
-            />
-          </motion.div>
-
-          <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
-            <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1, ease: 'easeOut' }}>
-              <motion.h1 className="text-5xl md:text-7xl font-bold mb-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
-                Hi, I'm <span className="text-[#00ADB5] gradient-text">Yash</span>
-              </motion.h1>
-              <motion.h2 className="text-2xl md:text-3xl text-[#EEEEEE]/80 mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}>
-                DevOps Engineer · B.Tech CSE Student
-              </motion.h2>
-              <motion.p className="text-lg text-[#EEEEEE]/70 mb-8 leading-relaxed" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
-                Passionate about automating everything, building robust CI/CD pipelines, and crafting scalable infrastructure solutions. Currently running on Arch Linux and loving every bit of it.
-              </motion.p>
-
-              <motion.div className="flex flex-wrap gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }}>
-                <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#00ADB5]/25">
-                  <Link href="https://yash-xoxo.github.io/yash-search/assets/resume/yash_resume_NEW.pdf">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Resume
-                  </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5] hover:text-white transition-all duration-300 hover:scale-105"
-                  onClick={() => scrollToSection('contact')}
-                >
-                  Get In Touch
-                </Button>
-              </motion.div>
-
-              <motion.div className="flex space-x-6 mt-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 1 }}>
-                {[
-                  { href: 'https://github.com/Yash-xoxo', icon: Github },
-                  { href: 'https://linkedin.com/in/yash-gupta-4285b8312', icon: Linkedin },
-                  { href: 'mailto:yashg5577@gmail.com', icon: Mail },
-                ].map(({ href, icon: Icon }) => (
-                  <motion.a key={href} href={href} className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition-all duration-300 hover:scale-110" whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
-                    <Icon className="h-6 w-6" />
-                  </motion.a>
-                ))}
-              </motion.div>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }} className="relative">
-              <div className="relative">
-                <motion.img
-                  src="https://github.com/Yash-xoxo/yash-search/blob/main/assets/img/passport-new.jpg?raw=true"
-                  alt="Yash Gupta"
-                  className="w-80 h-80 rounded-full mx-auto border-4 border-[#00ADB5] shadow-2xl object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-            </motion.div>
-          </div>
-
-          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
-            <ChevronDown className="h-8 w-8 text-[#00ADB5] opacity-70" />
-          </motion.div>
-        </section>
-
-        {/* Timeline Section */}
-        <section id="timeline" className="py-20 scroll-animate relative z-10">
-          <div className="container mx-auto px-4">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
-              My <span className="text-[#00ADB5]">Journey</span>
-            </motion.h2>
-
-            <div className="max-w-4xl mx-auto">
-              {timeline.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2, ease: 'easeOut' }}
-                  className={`flex items-center mb-12 ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
-                >
-                  <div className={`flex-1 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}`}>
-                    <div className="flip-card h-48">
-                      <div className="flip-card-inner">
-                        {/* Front */}
-                        <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg p-4 overflow-hidden">
-                          <div className="flex items-start gap-3 mb-2 h-full">
-                            <span className="text-2xl flex-shrink-0">{item.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-[#EEEEEE] font-bold text-base leading-tight mb-1 break-words">{item.title}</h3>
-                              <p className="text-[#00ADB5] text-sm mb-2">{item.year}</p>
-                              <p className="text-[#EEEEEE]/80 text-sm leading-relaxed line-clamp-3">{item.description}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Back */}
-                        <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-4 text-white overflow-hidden">
-                          <h3 className="font-bold text-lg mb-3 break-words">{item.title}</h3>
-                          <div className="text-sm space-y-2 overflow-y-auto max-h-32">
-                            <p><strong>Duration:</strong> {item.year}</p>
-                            <p><strong>Type:</strong> {item.type}</p>
-                            <div>
-                              <strong>Key Details:</strong>
-                              <ul className="mt-1 space-y-1 text-xs">
-                                {item.type === 'education' && item.title.includes('Class 12') && (
-                                  <>
-                                    <li>• Subjects: {item.details.subjects.join(', ')}</li>
-                                    <li>• Board: {item.details.board}</li>
-                                    <li>• Focus: {item.details.focus}</li>
-                                  </>
-                                )}
-                                {item.type === 'education' && item.title.includes('B.Tech') && (
-                                  <>
-                                    <li>• Specialization: {item.details.specialization}</li>
-                                    <li>• Current Status: {item.details.currentYear}</li>
-                                    <li>• Focus Areas: {item.details.focus}</li>
-                                  </>
-                                )}
-                                {item.type === 'project' && (
-                                  <>
-                                    <li>• Event: {item.details.event}</li>
-                                    <li>• Achievement: {item.details.achievement}</li>
-                                    <li>• Technology: {item.details.technology}</li>
-                                  </>
-                                )}
-                                {item.type === 'experience' && (
-                                  <>
-                                    <li>• Duration: {item.details.duration}</li>
-                                    <li>• Tech Stack: {item.details.technologies.join(', ')}</li>
-                                    <li>• Key Achievement: {item.details.achievements}</li>
-                                  </>
-                                )}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <motion.div className="w-4 h-4 bg-[#00ADB5] rounded-full border-4 border-[#222831] z-10" whileInView={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.6, delay: index * 0.2 }} />
-                  <div className="flex-1"></div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Skills Section */}
-        <section id="skills" className="py-20 bg-[#393E46]/20 scroll-animate relative z-10">
-          <div className="container mx-auto px-4">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
-              Technical <span className="text-[#00ADB5]">Skills</span>
-            </motion.h2>
-
-            {/* Filters */}
-            <motion.div className="flex flex-wrap justify-center gap-4 mb-12" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
-              {['All', 'DevOps', 'Monitoring', 'Code', 'Infra', 'AI'].map((filter, index) => (
-                <motion.div key={filter} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    variant={activeFilter === filter ? 'default' : 'outline'}
-                    onClick={() => handleFilterChange(filter)}
-                    className={`transition-all duration-300 ${
-                      activeFilter === filter
-                        ? 'bg-[#00ADB5] text-white shadow-lg shadow-[#00ADB5]/25'
-                        : 'border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5] hover:text-white'
-                    }`}
-                  >
-                    {filter}
-                  </Button>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Skills Grid */}
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
-              {filteredSkills.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.5, delay: index * 0.05, ease: 'easeOut' }}
-                  className="flip-card h-32"
-                >
-                  <div className="flip-card-inner">
-                    <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg p-4 text-center">
-                      <div className="text-2xl mb-2">{skill.icon}</div>
-                      <div className="text-[#EEEEEE] font-medium text-sm">{skill.name}</div>
-                      <Badge variant="secondary" className="mt-2 bg-[#00ADB5]/20 text-[#00ADB5] text-xs">
-                        {skill.category}
-                      </Badge>
-                    </div>
-                    <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-4 text-center text-white">
-                      <div className="text-lg font-bold mb-2">{skill.name}</div>
-                      <div className="text-xs leading-relaxed">
-                        {skill.category === 'DevOps' && 'Container orchestration, CI/CD pipelines, automation'}
-                        {skill.category === 'Monitoring' && 'System health tracking, log analysis, performance metrics'}
-                        {skill.category === 'Code' && 'Development tools, version control, scripting'}
-                        {skill.category === 'Infra' && 'Infrastructure as Code, cloud provisioning, configuration'}
-                        {skill.category === 'AI' && 'AI/ML integration, prompt engineering, automation'}
-                      </div>
-                      <div className="mt-2 text-xs opacity-80">Experience Level: {Math.floor(Math.random() * 3) + 2} years</div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Projects Section */}
-        <section id="projects" className="py-20 scroll-animate relative z-10">
-          <div className="container mx-auto px-4">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
-              Featured <span className="text-[#00ADB5]">Projects</span>
-            </motion.h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {projects.map((project, index) => (
-                <motion.div key={index} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' }} className="flip-card h-80">
-                  <div className="flip-card-inner">
-                    <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg overflow-hidden">
-                      <div className="relative h-48">
-                        <img
-                          src={project.image || '/placeholder.svg'}
-                          alt={project.title}
-                          className="w-full h-full object-cover transition-transform duration-500"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#393E46] to-transparent"></div>
-                      </div>
-                      <div className="p-4">
-                        <h3 className="text-[#EEEEEE] font-bold text-lg mb-2">{project.title}</h3>
-                        <p className="text-[#EEEEEE]/70 text-sm line-clamp-2">{project.description}</p>
-                        <div className="flex flex-wrap gap-1 mt-3">
-                          {project.tags.slice(0, 2).map((tag) => (
-                            <Badge key={tag} variant="secondary" className="bg-[#00ADB5]/20 text-[#00ADB5] text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-6 text-white">
-                      <h3 className="font-bold text-xl mb-4">{project.title}</h3>
-                      <p className="text-sm leading-relaxed mb-4">{project.description}</p>
-
-                      <div className="mb-4">
-                        <h4 className="font-semibold mb-2">Technologies:</h4>
-                        <div className="flex flex-wrap gap-1">
-                          {project.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="bg-white/20 text-white text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mb-4">
-                        <h4 className="font-semibold mb-1">Key Features:</h4>
-                        <ul className="text-xs space-y-1">
-                          <li>• Automated deployment pipeline</li>
-                          <li>• Scalable architecture</li>
-                          <li>• Real-time monitoring</li>
-                        </ul>
-                      </div>
-
-                      <Button variant="outline" className="w-full border-white text-white hover:bg-white hover:text-[#00ADB5] mt-auto transition-all duration-300" onClick={() => window.open(project.link, '_blank')}>
-                        View Project <ExternalLink className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Certifications Section */}
-        <section id="certifications" className="py-20 bg-[#393E46]/20 scroll-animate relative z-10">
-          <div className="container mx-auto px-4">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
-              <span className="text-[#00ADB5]">Certifications</span> & Achievements
-            </motion.h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {certifications.map((cert, index) => (
-                <motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }} className="flip-card h-48">
-                  <div className="flip-card-inner">
-                    <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg p-6 text-center">
-                      <div className="text-4xl mb-4">{cert.icon}</div>
-                      <h3 className="text-[#EEEEEE] text-lg font-bold leading-tight mb-2">{cert.title}</h3>
-                      <p className="text-[#00ADB5] text-sm">{cert.platform}</p>
-                    </div>
-
-                    <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-6 text-white">
-                      <h3 className="font-bold text-lg mb-3">{cert.title}</h3>
-                      <div className="text-sm space-y-2 mb-4">
-                        <p><strong>Platform:</strong> {cert.platform}</p>
-                        <p><strong>Status:</strong> Certified</p>
-                        <p>
-                          <strong>Skills:</strong>
-                          {cert.title.includes('DevOps and Cloud') && ' DevOps, Cloud Computing, Infrastructure'}
-                          {cert.title.includes('RHCSA') && ' System Administration, Linux'}
-                          {cert.title.includes('Azure') && ' Cloud Services, AI/ML'}
-                          {cert.title.includes('AWS') && ' Cloud Computing, Infrastructure'}
-                          {cert.title.includes('DevOps Tools') && ' CI/CD, Automation'}
-                          {cert.title.includes('Linux') && ' Troubleshooting, System Management'}
-                        </p>
-                      </div>
-                      <Button variant="outline" size="sm" className="w-full border-white text-white hover:bg-white hover:text-[#00ADB5] transition-all duration-300" onClick={() => window.open(cert.link, '_blank')}>
-                        View Certificate <ExternalLink className="ml-2 h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Blog Section */}
-        <section className="py-20 scroll-animate relative z-10">
-          <div className="container mx-auto px-4">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
-              Latest <span className="text-[#00ADB5]">Blog Posts</span>
-            </motion.h2>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[
-                {
-                  title: 'Docker & Kubernetes: Use Cases in Industries',
-                  description: 'How containers and orchestration power modern production systems across sectors.',
-                  tags: ['Docker', 'Kubernetes', 'DevOps'],
-                  link: '/blog/docker-kubernetes-industries',
-                },
-                {
-                  title: 'Monitoring in the Wild: Prometheus & Grafana',
-                  description: 'Metrics, alerting, and dashboards that keep SREs sane and systems healthy.',
-                  tags: ['Prometheus', 'Grafana', 'Observability'],
-                  link: '/blog/monitoring-prometheus-grafana',
-                },
-                {
-                  title: 'Linux at Work: RHEL 9 and Other Distros',
-                  description: 'Enterprise Linux distributions and where each shines in production.',
-                  tags: ['Linux', 'RHEL 9', 'Distros'],
-                  link: '/blog/redhat-rhel9-linux-distros',
-                },
-              ].map((blog, i) => (
-                <motion.div key={blog.link} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }} whileHover={{ y: -5 }}>
-                  <Link href={blog.link}>
-                    <Card className="bg-[#393E46]/90 backdrop-blur-sm border-[#00ADB5]/30 h-full transition-all duration-300 hover:border-[#00ADB5] hover:shadow-lg hover:shadow-[#00ADB5]/10">
-                      <CardHeader>
-                        <div className="w-full h-32 bg-[#00ADB5]/20 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
-                          <img 
-                            src={blog.link === '/blog/docker-kubernetes-industries' 
-                              ? 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(8).png?raw=true'
-                              : blog.link === '/blog/monitoring-prometheus-grafana'
-                              ? 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(9).png?raw=true'
-                              : 'https://github.com/Yash-xoxo/yash-search/blob/main/assets/New%20Folder/download%20(10).png?raw=true'
-                            }
-                            alt={blog.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <CardTitle className="text-[#EEEEEE] text-lg leading-tight">{blog.title}</CardTitle>
-                        <CardDescription className="text-[#EEEEEE]/70">{blog.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex gap-2">
-                          {blog.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="bg-[#00ADB5]/20 text-[#00ADB5]">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Aspirations Section */}
-        <section className="py-20 bg-[#393E46]/20 scroll-animate relative z-10">
-          <div className="container mx-auto px-4">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
-              Future <span className="text-[#00ADB5]">Aspirations</span>
-            </motion.h2>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {aspirations.map((aspiration, index) => (
-                <motion.div key={index} initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' }} className="flip-card h-48">
-                  <div className="flip-card-inner">
-                    <div className="flip-card-front bg-[#393E46]/90 backdrop-blur-sm border border-[#00ADB5]/30 rounded-lg p-6">
-                      <div className="flex items-center gap-4">
-                        <div className="text-3xl">{aspiration.icon}</div>
-                        <div>
-                          <h3 className="text-[#EEEEEE] font-bold text-lg">{aspiration.title}</h3>
-                          <p className="text-[#EEEEEE]/70 text-sm mt-2">{aspiration.description}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flip-card-back bg-[#00ADB5]/95 backdrop-blur-sm border border-[#00ADB5] rounded-lg p-6 text-white">
-                      <h3 className="font-bold text-xl mb-4">{aspiration.title}</h3>
-                      <div className="text-sm space-y-2">
-                        <p><strong>Timeline:</strong> 2025-2027</p>
-                        <p><strong>Focus Areas:</strong></p>
-                        <ul className="text-xs space-y-1 mt-2">
-                          {aspiration.title.includes('Product') && (
-                            <>
-                              <li>• Cloud-native architecture</li>
-                              <li>• Kubernetes orchestration</li>
-                              <li>• DevOps automation tools</li>
-                            </>
-                          )}
-                          {aspiration.title.includes('Teach') && (
-                            <>
-                              <li>• Content creation</li>
-                              <li>• Community building</li>
-                              <li>• Knowledge sharing</li>
-                            </>
-                          )}
-                          {aspiration.title.includes('Open Source') && (
-                            <>
-                              <li>• Linux kernel contributions</li>
-                              <li>• Package maintenance</li>
-                              <li>• Community involvement</li>
-                            </>
-                          )}
-                          {aspiration.title.includes('GitOps') && (
-                            <>
-                              <li>• AI-driven infrastructure</li>
-                              <li>• GitOps workflows</li>
-                              <li>• Intelligent automation</li>
-                            </>
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section id="contact" className="py-20 scroll-animate relative z-10">
-          <div className="container mx-auto px-4">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="text-4xl font-bold text-center mb-16">
-              Get In <span className="text-[#00ADB5]">Touch</span>
-            </motion.h2>
-
-            <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-              {/* Contact Info */}
-              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
-                <h3 className="text-2xl font-bold mb-8 text-[#00ADB5]">Let's Connect</h3>
-                <div className="space-y-6">
-                  {[
-                    { icon: Mail, label: 'Email', value: 'yashg5577@gmail.com', href: 'mailto:yashg5577@gmail.com' },
-                    { icon: Phone, label: 'Phone', value: '+91 78394 91779', href: 'tel:+917839491779' },
-                    { icon: Github, label: 'GitHub', value: 'github.com/Yash-xoxo', href: 'https://github.com/Yash-xoxo' },
-                    { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/yash-gupta-4285b8312', href: 'https://linkedin.com/in/yash-gupta-4285b8312' },
-                  ].map(({ icon: Icon, label, value, href }, index) => (
-                    <motion.div key={label} className="flex items-center gap-4" initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: index * 0.1 }} whileHover={{ x: 5 }}>
-                      <Icon className="h-6 w-6 text-[#00ADB5]" />
-                      <div>
-                        <p className="font-medium">{label}</p>
-                        <a href={href} className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition-colors duration-300">
-                          {value}
-                        </a>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Contact Form */}
-              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
-                <Card className="bg-[#393E46]/90 backdrop-blur-sm border-[#00ADB5]/30 hover:border-[#00ADB5] transition-all duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-[#EEEEEE]">Send a Message</CardTitle>
-                    <CardDescription className="text-[#EEEEEE]/70">
-                      I'd love to hear from you. Send me a message and I'll respond as soon as possible.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <form onSubmit={(e) => {
-                      e.preventDefault()
-                      const formData = new FormData(e.currentTarget)
-                      handleSubmit(formData)
-                    }} className="space-y-4">
-                      <Input
-                        name="name"
-                        placeholder="Your Name"
-                        className="bg-[#222831]/80 backdrop-blur-sm border-[#00ADB5]/30 text-[#EEEEEE] placeholder:text-[#EEEEEE]/50 focus:border-[#00ADB5] transition-all duration-300"
-                        required
-                        disabled={isPending}
-                      />
-                      <Input
-                        type="email"
-                        name="email"
-                        placeholder="Your Email"
-                        className="bg-[#222831]/80 backdrop-blur-sm border-[#00ADB5]/30 text-[#EEEEEE] placeholder:text-[#EEEEEE]/50 focus:border-[#00ADB5] transition-all duration-300"
-                        required
-                        disabled={isPending}
-                      />
-                      <Textarea
-                        name="message"
-                        placeholder="Your Message"
-                        rows={5}
-                        className="bg-[#222831]/80 backdrop-blur-sm border-[#00ADB5]/30 text-[#EEEEEE] placeholder:text-[#EEEEEE]/50 focus:border-[#00ADB5] transition-all duration-300 resize-none"
-                        required
-                        disabled={isPending}
-                      />
-                      <Button className="w-full bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white transition-all duration-300 hover:shadow-lg hover:shadow-[#00ADB5]/25" disabled={isPending}>
-                        {isPending ? 'Sending...' : 'Send Message'}
-                      </Button>
-                    </form>
-
-                    {formState.status === 'success' && (
-                      <div className="flex items-center gap-2 text-green-400 text-sm">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <span>{formState.message}</span>
-                      </div>
-                    )}
-                    {formState.status === 'error' && (
-                      <div className="flex items-center gap-2 text-red-400 text-sm">
-                        <AlertCircle className="h-4 w-4" />
-                        <span>{formState.message}</span>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="py-12 border-t border-[#393E46]/50 relative z-10">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6 }} className="text-[#EEEEEE]/70 mb-4 md:mb-0">
-                © 2025 Yash Gupta — Built with ❤️ on Arch Linux
-              </motion.p>
-
-              <motion.div className="flex space-x-6" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
-                {[
-                  { href: 'https://github.com/Yash-xoxo', icon: Github },
-                  { href: 'https://linkedin.com/in/yash-gupta-4285b8312', icon: Linkedin },
-                  { href: 'mailto:yashg5577@gmail.com', icon: Mail },
-                ].map(({ href, icon: Icon }) => (
-                  <motion.a key={href} href={href} className="text-[#EEEEEE]/70 hover:text-[#00ADB5] transition-all duration-300" whileHover={{ scale: 1.2, y: -2 }} whileTap={{ scale: 0.9 }}>
-                    <Icon className="h-5 w-5" />
-                  </motion.a>
-                ))}
-              </motion.div>
-            </div>
-
-            <motion.div className="flex justify-center space-x-8 mt-8 text-sm text-[#EEEEEE]/50" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}>
-              <Link href="/privacy" className="hover:text-[#00ADB5] transition-colors duration-300">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-[#00ADB5] transition-colors duration-300">Terms of Use</Link>
-            </motion.div>
-          </div>
-        </footer>
-      </div>
+          ))}
+        </div>
+        <button onClick={() => step(1)} className="inline-flex items-center text-[#EEEEEE]/70 hover:text-[#00ADB5] transition" aria-label="Next section">
+          <span className="hidden sm:inline">{sections[(idx + 1) % sections.length].label}</span>
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </footer>
     </div>
   )
 }

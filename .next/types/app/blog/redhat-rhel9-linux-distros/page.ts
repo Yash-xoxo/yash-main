@@ -1,4 +1,4 @@
-// File: /home/yashxoxo/Documents/GitHub/yash-main/app/blog/redhat-rhel9-linux-distros/page.tsx
+// File: /home/yash/yash/desktop/yash-main/app/blog/redhat-rhel9-linux-distros/page.tsx
 import * as entry from '../../../../../app/blog/redhat-rhel9-linux-distros/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
